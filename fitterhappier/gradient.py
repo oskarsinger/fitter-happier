@@ -1,6 +1,6 @@
 import utils as ou
 
-class GradientOptimizer:
+class Gradient:
 
     def __init__(self, beta=None, dual_avg=False):
 
