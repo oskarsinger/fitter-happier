@@ -38,20 +38,6 @@ def is_converged(previous, current, eps, verbose):
 
     return dist < eps
 
-def get_gram(A, reg=None):
-
-    gram = np.dot(A.T, A)
-
-    reg_matrix = None
-
-    if reg is not None:
-        reg_matrix = reg \
-            if np.isscalar(gram) else \
-            reg * np.identity(gram.shape[0])
-        gram = gram + reg_matrix
-
-    return gram
-
 def get_lp_norm_gradient(x, p):
 
     vec = np.sign(x) * get_safe_power(np.absolute(x), p-1)
