@@ -1,2 +1,3 @@
-import misc
-import proximal
+from .misc import *
+
+from . import proximal

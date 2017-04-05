@@ -1,7 +1,7 @@
 import numpy as np
 
-from optimization.stepsize import FixedScheduler as FXS
-from optimization.qnservers import DiagonalAdaGradServer as DAGS
+from fitterhappier.stepsize import FixedScheduler as FXS
+from fitterhappier.qn import DiagonalAdaGradServer as DAGS
 from drrobert.misc import unzip
 
 class QuasinewtonInexactDANE:

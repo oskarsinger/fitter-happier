@@ -15,7 +15,7 @@ class ProbabilisticLineSearcher:
 
     def get_step_size(self, f, f_prime):
 
-        print "Stuff"
+        print('Poop')
 
         return 0
 

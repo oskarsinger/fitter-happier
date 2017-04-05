@@ -33,8 +33,8 @@ def is_converged(previous, current, eps, verbose):
     dist = np.linalg.norm(previous - current)
 
     if verbose:
-        print "\tChecking for convergence"
-        print "\tDistance between iterates: ", dist
+        print("\tChecking for convergence")
+        print("\tDistance between iterates: ", dist)
 
     return dist < eps
 

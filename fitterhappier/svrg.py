@@ -1,7 +1,7 @@
 import numpy as np
-import optimization.utils as ou
+import fitterhappier.utils as ou
 
-from optimization.stepsize import FixedScheduler as FXS
+from fitterhappier.stepsize import FixedScheduler as FXS
 
 class StochasticVarianceReducedGradient:
 

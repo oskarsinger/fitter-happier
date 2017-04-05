@@ -1,5 +1,5 @@
 import numpy as np
-import optimization.utils as ou
+import fitterhappier.utils as ou
 
 from linal.utils import get_safe_power as get_sp
 

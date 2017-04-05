@@ -1,9 +1,9 @@
 import numpy as np
 
-from optimization.utils import get_shrunk_and_thresholded as get_st
+from fitterhappier.utils import get_shrunk_and_thresholded as get_st
 from drrobert.data_structures import FixedLengthQueue as FLQ
 
-class PeriodicParameterProximalGradientOptimizer:
+class PeriodicParameterProximalOptimizer:
 
     def __init__(self,
         period, c,
@@ -65,4 +65,4 @@ class PeriodicSignalProximalGradientOptimizer:
         lower=None,
         verbose=False):
 
-        print 'Stuff'
+        print('Poop')

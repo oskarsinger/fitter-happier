@@ -1,5 +1,5 @@
 from linal.svd_funcs import get_schatten_p_norm as get_sp, get_svd_power
-from optimization.utils import get_lp_norm_gradient
+from fitterhappier.utils import get_lp_norm_gradient
 
 import numpy as np
 import drrobert.arithmetic as da
@@ -73,7 +73,7 @@ def get_mirror_update(
 
     drdb.check_for_nan_or_inf(
         dual_parameters, 
-        'optimizers.utils get_mirror_update', 
+        'utils get_mirror_update', 
         'dual_parameters')
 
     #print 'Computing dual descent update'
@@ -82,7 +82,7 @@ def get_mirror_update(
 
     drdb.check_for_nan_or_inf(
         dual_update, 
-        'optimizers.utils get_mirror_update', 
+        'utils get_mirror_update', 
         'dual_update')
 
     #print 'Computing primal parameters'
@@ -91,7 +91,7 @@ def get_mirror_update(
 
     drdb.check_for_nan_or_inf(
         primal_parameters, 
-        'optimizers.utils get_mirror_update', 
+        'utils get_mirror_update', 
         'primal_parameters')
 
     #print 'Returning primal parameters'

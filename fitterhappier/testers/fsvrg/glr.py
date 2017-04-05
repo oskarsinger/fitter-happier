@@ -1,6 +1,6 @@
 import numpy as np
 
-from fitterhappier.optimizers.distributed import FSVRG
+from fitterhappier.distributed import FSVRG
 from whitehorses.loaders.shortcuts import get_LRGL
 from whitehorses.servers.batch import BatchServer as BS
 from models import LinearRegression as LR

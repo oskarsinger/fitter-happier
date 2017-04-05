@@ -1,4 +1,4 @@
-import utils as ou
+from fitterhappier.utils.proximal import get_avg_search_direction as gasd
 
 class Gradient:
 
@@ -17,7 +17,7 @@ class Gradient:
 
     def get_update(self, parameters, gradient, eta):
 
-        self.search_direction = ou.get_search_direction(
+        self.search_direction = gasd(
             self.search_direction, 
             gradient, 
             self.dual_avg,

@@ -1,1 +1,1 @@
-import periodicimport periodic
+from .periodic import PeriodicParameterProximalOptimizer

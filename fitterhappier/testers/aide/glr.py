@@ -1,6 +1,6 @@
 import numpy as np
 
-from optimization.optimizers.distributed import AIDE
+from fitterhappier.distributed import AIDE
 from data.loaders.shortcuts import get_LRGL
 from data.servers.batch import BatchServer as BS
 from models import LinearRegression as LR

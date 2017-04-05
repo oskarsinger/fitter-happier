@@ -1,8 +1,8 @@
 import numpy as np
 from .. import utils as ou
 
-from optimization.utils import get_lp_norm_gradient as get_lpn_grad
-from optimization.utils import get_shrunk_and_thresholded as get_st
+from fitterhappier.utils import get_lp_norm_gradient as get_lpn_grad
+from fitterhappier.utils import get_shrunk_and_thresholded as get_st
 from linal.svd_funcs import get_multiplied_svd
 
 class SchattenPCOMIDOptimizer:

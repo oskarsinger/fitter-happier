@@ -1,8 +1,8 @@
 import numpy as np
 
 from drrobert.misc import unzip, prod
-from optimization.qnservers import StaticDiagonalServer as SDS
-from optimization.stepsize import InversePowerScheduler as IPS
+from fitterhappier.qn import StaticDiagonalServer as SDS
+from fitterhappier.stepsize import InversePowerScheduler as IPS
 from linal.utils import get_safe_power as get_sp
 
 class BanditFSVRG:
