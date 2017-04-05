@@ -5,7 +5,7 @@ from data.loaders.shortcuts import get_er_ESGWBEL
 from data.servers.rl import BanditServer as BS
 from models import BanditNetworkRademacherGaussianMixtureModel as BNRGMM
 
-class BNRGMMBanditFSVRGRunner:
+class BNRGMMBanditFSVRGTester:
 
     def __init__(self,
         num_nodes,

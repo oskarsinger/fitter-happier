@@ -1,11 +1,11 @@
 import numpy as np
 
-from optimization.optimizers.distributed import FSVRG
-from data.loaders.shortcuts import get_LRGL
-from data.servers.batch import BatchServer as BS
+from fitterhappier.optimizers.distributed import FSVRG
+from whitehorses.loaders.shortcuts import get_LRGL
+from whitehorses.servers.batch import BatchServer as BS
 from models import LinearRegression as LR
 
-class GaussianLinearRegressionFSVRGRunner:
+class GaussianLinearRegressionFSVRGTester:
 
     def __init__(self,
         num_nodes,

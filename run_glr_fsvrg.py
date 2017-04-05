@@ -2,7 +2,7 @@ import click
 
 import numpy as np
 
-from runners.distributed.fsvrg import GaussianLinearRegressionFSVRGRunner as GLRFSVRGR
+from testers.fsvrg import GaussianLinearRegressionFSVRGTester as GLRFSVRGT
 from lazyprojector import plot_lines
 
 @click.command()
@@ -20,7 +20,7 @@ def run_it_all_day_bb(
     h,
     noisy):
 
-    runner = GLRFSVRGR(
+    tester = GLRFSVRGT(
         num_nodes,
         n,
         p,
@@ -28,10 +28,10 @@ def run_it_all_day_bb(
         h=h,
         noisy=noisy)
 
-    runner.run()
+    tester.run()
 
     objs = np.array(
-        [sum(os) for os in runner.objectives])
+        [sum(os) for os in tester.objectives])
     objs = objs[:,np.newaxis]
     y = np.arange(max_rounds)[:,np.newaxis]
     data_map = {

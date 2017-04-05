@@ -1,2 +1,2 @@
-from glr import GaussianLinearRegressionFSVRGRunner
-from network import BNRGMMBanditFSVRGRunner
+from glr import GaussianLinearRegressionFSVRGTester
+from network import BNRGMMBanditFSVRGTester
