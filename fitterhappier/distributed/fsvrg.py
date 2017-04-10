@@ -108,58 +108,6 @@ class BanditFSVRG:
 
         return (S_servers, A_server)
 
-class ContextualBanditFSVRGNode:
-
-    def __init__(self,
-        model,
-        server,
-        id_number,
-        h=0.01):
-
-        self.model = model
-        self.server = server
-        self.get_objective = model.get_objective
-        self.get_coord_sums = model.get_coordinate_sums
-        self.get_action = model.get_action
-        self.id_number = id_number
-        self.h = h
-
-        self.nk = 1
-        self.p_shape = self.model.get_parameter_shape()
-        # TODO: replace begin/end with arbitrary index vector
-        self.begin = self.id_number * prod(self.p_shape)
-        self.end = self.begin + prod(self.p_shape)
-        self.get_local = lambda x: x[self.begin:self.end]
-        (self.n_jks, self.phi_jks) = [None] * 2
-        self.get_stochastic_gradient = model.get_gradient
-        self.eta_scheduler = IPS(initial=h,power=0.75)
-        self.objectives = []
-        self.rewards = []
-        self.actions = []
-
-    def set_S_server(self, S_server):
-
-        self.S_server = S_server
-
-    def get_fsvrg_params(self):
-
-        self._compute_local_fsvrg_params()
-
-        return (self.n_jks, self.phi_jks, self.nk)
-
-    def _compute_local_fsvrg_params(self):
-
-        if self.nk == 1:
-            self.n_jks = np.zeros(
-                self.model.get_parameter_shape())
-            # To avoid NaNs in S matrix
-            self.n_jks += 0.0001
-        else:
-            self.n_jks = self.get_coord_sums(
-                zip(self.rewards, self.actions))
-
-        self.phi_jks = self.n_jks / self.nk
-
 class BanditFSVRGNode:
 
     def __init__(self,
