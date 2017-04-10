@@ -163,7 +163,6 @@ class BanditFSVRGNode:
     def set_global_info(self, global_w, global_grad):
 
         self.global_w = np.copy(global_w)
-        self.global_grad = np.copy(global_grad)
         self.local_w = self.get_local(global_w)
         self.local_grad = self.get_local(global_grad)
         self.w_n = np.copy(self.local_w)
