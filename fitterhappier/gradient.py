@@ -1,4 +1,4 @@
-from fitterhappier.utils.proximal import get_avg_search_direction as gasd
+from drrobert.arithmetic import get_moving_avg as get_ma
 
 class Gradient:
 
@@ -6,30 +6,25 @@ class Gradient:
 
         if beta is None:
             beta = 0
-            self.alpha = 1
-        else:
-            self.alpha = 1 - beta
 
+        self.alpha = 1 - beta
         self.beta = beta
-        self.dual_avg = dual_avg
         self.search_direction = None
         self.num_rounds = 0
 
     def get_update(self, parameters, gradient, eta):
 
-        self.search_direction = gasd(
+        self.search_direction = get_ma(
             self.search_direction, 
             gradient, 
-            self.dual_avg,
-            alpha=self.alpha, 
-            beta=self.beta)
+            1 - self.beta,
+            self.beta)
 
         return parameters - eta * self.search_direction
 
     def get_status(self):
 
         return {
-            'alpha': self.alpha,
             'beta': self.beta,
             'dual_avg': self.dual_avg,
             'search_direction': self.search_direction,

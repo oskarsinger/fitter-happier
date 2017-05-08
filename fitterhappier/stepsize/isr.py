@@ -8,8 +8,8 @@ class InversePowerScheduler:
 
     def get_stepsize(self):
 
-        denom = float(self.num_rounds+1)**(-self.power)
         self.num_rounds += 1
+        denom = float(self.num_rounds)**(-self.power)
 
         return denom * self.initial
 
