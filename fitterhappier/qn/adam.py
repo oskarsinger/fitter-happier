@@ -11,8 +11,8 @@ class DiagonalAdamServer:
 
     def __init__(self, 
         delta=10**(-8),
-        beta1=0.999,
-        beta2=0.9,
+        beta1=0.9,
+        beta2=0.999,
         lower=None, 
         verbose=False):
 
@@ -66,7 +66,6 @@ class DiagonalAdamServer:
 
         # Get the dual transformation
         H = np.power(sm_hat, 0.5) + self.delta
-        print('H norm', np.linalg.norm(H))
 
         return H * parameters
 
@@ -85,11 +84,9 @@ class DiagonalAdamServer:
 
         denom = 1 - self.beta2**(self.num_rounds)
         sm_hat = self.second_moment / denom
-        print('sm_hat norm', np.linalg.norm(sm_hat))
         
         # Get the primal transformation
         H = np.power(sm_hat, 0.5) + self.delta
-        print('H norm', np.linalg.norm(H))
             
         return dual_update / H
 
