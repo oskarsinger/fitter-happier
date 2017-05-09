@@ -11,8 +11,8 @@ class DiagonalAdamServer:
 
     def __init__(self, 
         delta=10**(-8),
-        beta1=0.9,
-        beta2=0.999,
+        beta1=0.999,
+        beta2=0.9,
         lower=None, 
         verbose=False):
 
