@@ -23,7 +23,6 @@ class DiagonalAdamServer:
         self.lower = lower
         self.verbose = verbose
 
-        self.d = None
         self.first_moment = None
         self.second_moment = None
         self.num_rounds = 0
@@ -32,20 +31,17 @@ class DiagonalAdamServer:
 
         self.num_rounds += 1
 
-        if self.d is None:
-            self.d = gradient.shape[0]
-            self.first_moment = np.zeros((self.d, 1))
-            self.second_moment = np.zeros((self.d, 1))
+        if self.first_moment is None:
+            self.first_moment = np.copy(gradient)
+            self.second_moment = np.power(gradient, 2)
 
         self.second_moment = get_ma(
             self.second_moment,
             np.power(gradient, 2), 
-            1 - self.beta2,
             self.beta2)
         self.first_moment = get_ma(
             self.first_moment, 
             gradient, 
-            1 - self.beta1,
             self.beta1)
 
         denom = 1 - self.beta1**(self.num_rounds)
@@ -60,6 +56,8 @@ class DiagonalAdamServer:
         return mirror_update
 
     def _get_dual(self, parameters):
+
+        print(self.num_rounds)
 
         denom = 1 - self.beta2**(self.num_rounds)
         sm_hat = self.second_moment / denom
