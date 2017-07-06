@@ -26,24 +26,27 @@ class LinearConjugateGradientOptimizer:
             self.A.shape[1],
             self.b.shape[1])
         r = self.b - np.dot(self.A, x)
+        d = np.copy(r)
         delta = np.linalg.norm(r)**2
         threshold = self.epsilon**2 * delta
         i = 0
 
         while i < self.max_iters and not converged:
             
-            q = np.dot(A, r)
-            rq_ip = np.trace(np.dot(r.T, q))
+            q = np.dot(A, d)
+            rq_ip = np.trace(np.dot(d.T, q))
             alpha = delta / rq_ip
-            x = x + alpha * r
+            x = x + alpha * d
 
             if i % self.cycle == 0:
                 r = b - np.dot(A, x)
             else:
                 r = r - alpha * q
 
-            delta = np.linalg.norm(r)**2
-
+            new_delta = np.linalg.norm(r)**2
+            beta = new_delta / delta
+            delta = new_delta
+            d = r + beta * d
             converged = delta < threshold
             i += 1
 
