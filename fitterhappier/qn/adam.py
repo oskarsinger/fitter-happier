@@ -3,7 +3,7 @@ import numpy as np
 from .. import utils as ou
 from ..utils.proximal import get_mirror_update as get_mu
 from fitterhappier.utils import get_shrunk_and_thresholded as get_st
-from linal.svd_funcs import get_multiplied_svd, get_svd_power
+from linal.svd import get_multiplied_svd, get_svd_power
 from linal.utils import get_sherman_morrison as get_sm
 from drrobert.arithmetic import get_moving_avg as get_ma
 

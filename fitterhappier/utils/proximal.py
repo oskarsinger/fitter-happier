@@ -1,4 +1,4 @@
-from linal.svd_funcs import get_schatten_p_norm as get_sp, get_svd_power
+from linal.svd import get_schatten_p_norm as get_sp, get_svd_power
 from fitterhappier.utils import get_lp_norm_gradient
 
 import numpy as np

@@ -2,7 +2,7 @@ import numpy as np
 
 from .. import utils as ou
 from linal.utils import get_safe_power
-from linal.svd_funcs import get_svd_power
+from linal.svd import get_svd_power
 
 from linal.formulas import get_woodbury_inversion
 
