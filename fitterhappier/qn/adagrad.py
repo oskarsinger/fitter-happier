@@ -14,7 +14,7 @@ class FullAdaGradServer:
 class DiagonalAdaGradServer:
 
     def __init__(self,
-        delta=1,
+        delta=10**(-6),
         verbose=False):
 
         self.delta = delta
@@ -22,7 +22,7 @@ class DiagonalAdaGradServer:
         self.num_rounds = 0
         self.Q = None
 
-    def get_qn_transform(self, search_direction):
+    def get_transform(self, search_direction):
         
         self.num_rounds += 1
 
