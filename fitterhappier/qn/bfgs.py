@@ -39,17 +39,19 @@ class LBFGSServer:
         pass
 
 # TODO: cite Nocedal and Wright
-class BFGSServer:
+class BFGSSolver:
 
     def __init__(self, 
         get_objective, 
         get_gradient,
         initial_estimate,
-        epsilon):
+        max_rounds=100,
+        epsilon=10**(-5)):
 
         self.get_objective = get_objective
         self.get_gradient = get_gradient
         self.initial_estimate = initial_estimate
+        self.max_rounds = max_rounds
         self.epsilon = epsilon
 
         self.d = self.initial_estimate.shape[0]
@@ -69,7 +71,7 @@ class BFGSServer:
         H = np.eye(self.d)
         t = 0
 
-        while grad_norm > epsilon:
+        while grad_norm > epsilon and t < self.max_rounds:
 
             # Compute new estimate
             p = np.dot(-H, gradt)
