@@ -10,7 +10,7 @@ class GaussianLinearRegressionBFGSTester:
     def __init__(self,
         n,
         p,
-        max_rounds,
+        max_rounds=100,
         epsilon=10**(-5),
         init_params=None,
         noisy=False):
@@ -18,6 +18,7 @@ class GaussianLinearRegressionBFGSTester:
         self.n = n
         self.p = p + 1 # Add 1 for bias term
         self.max_rounds = max_rounds
+        self.epsilon = epsilon
         self.noisy = noisy
 
         if init_params is None:
@@ -31,9 +32,9 @@ class GaussianLinearRegressionBFGSTester:
             [self.p],
             ws=[self.w],
             noisys=[self.noisy],
-            bias=True)
+            bias=True)[0]
 
-        self.servers = [BS(l) for l in loaders]
+        self.server = BS(loader)
         self.model = LR(self.p)
         self.w_hat = None
 
@@ -46,4 +47,15 @@ class GaussianLinearRegressionBFGSTester:
         return self.w_hat
 
     def run(self):
-        pass
+
+        bfgs = BFGS(
+            self.model,
+            self.server,
+            initial_estimate=self.init_params,
+            max_rounds=self.max_rounds,
+            epsilon=self.epsilon)
+
+        bfgs.compute_parameters()
+
+        self.w_hat = bfgs.get_parameters()
+        self.objectives = bfgs.objectives
