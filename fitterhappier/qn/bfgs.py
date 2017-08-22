@@ -1,7 +1,7 @@
 import numpy as np
 
 from scipy.optimize import line_search
-from linal.utils import get_multidot
+from linal.utils import get_multi_dot as get_md
 
 # TODO: cite Mokhtari paper
 class RegularizedStochasticBFGSServer:
@@ -60,22 +60,31 @@ class BFGSSolver:
 
         self.initial_estimate = initial_estimate
 
+        self.w_hat = None
         self.data = self.server.get_data()
         self.objectives = []
+
+    def get_parameters(self):
+
+        if self.w_hat is None:
+            raise Exception(
+                'Parameters have not been computed.')
+        else:
+            return np.copy(self.w_hat)
 
     def _get_objective(self, estimate):
 
         return self.model.get_objective(
             self.data,
-            self.estimate)
+            estimate)
 
     def _get_gradient(self, estimate):
 
         return self.model.get_gradient(
             self.data,
-            self.estimate)
+            estimate)
 
-    def compute_solution(self):
+    def compute_parameters(self):
 
         estimatet = np.copy(self.initial_estimate)
         estimatet1 = None
@@ -85,21 +94,21 @@ class BFGSSolver:
         
         gradt = self._get_gradient(estimatet)
         gradt1 = None
-        grad_norm = np.linalg.norm(grad)
+        grad_norm = np.linalg.norm(gradt)
         H = np.eye(self.d)
         t = 0
 
-        while grad_norm > epsilon and t < self.max_rounds:
+        while grad_norm > self.epsilon and t < self.max_rounds:
 
             # Compute new estimate
-            s = self._get_s(H, gradt, estimatet)
+            s = self._get_s(H, gradt, estimatet, t)
             estimatet1 = estimatet + s
 
             self.objectives.append(
                 self._get_objective(estimatet1))
 
             # Compute new gradient and y
-            gradt1 = self.get_gradient(estimatet1)
+            gradt1 = self._get_gradient(estimatet1)
             grad_norm = np.linalg.norm(gradt1)
             y = gradt1 - gradt
 
@@ -108,35 +117,38 @@ class BFGSSolver:
             gradt = np.copy(gradt1)
 
             # Update H (B's inverse)
-            if t == 0:
-                H *= np.dot(s.T, y) / np.dot(y.T, y)
-
-            H = self._get_H(H, s, y)
+            H = self._get_H(H, s, y, t)
 
             t += 1
 
-    def _get_s(self, H, grad, estimate):
+        self.w_hat = estimatet1
+
+    def _get_s(self, H, grad, estimate, t):
 
         p = np.dot(-H, grad)
         oofv = None if t == 0 else self.objectives[-2]
-        eta = line_search(
+        results = line_search(
             self._get_objective,
-            self._get_gradient,
+            lambda x: self._get_gradient(x)[:,0],
             estimate,
             p,
-            gfk=grad,
+            gfk=grad[:,0],
             old_fval=self.objectives[-1],
             old_old_fval=oofv)
+        eta = results[0]
 
         return eta * p
 
-    def _get_H(self, H, s, y):
+    def _get_H(self, H, s, y, t):
+
+        if t == 0:
+            H *= np.dot(s.T, y) / np.dot(y.T, y)
 
         rho = 1 / np.dot(s.T, y)
         quad_terms = rho * np.dot(s, y.T)
         left = np.eye(self.d) - quad_terms
         right = np.eye(self.d) - quad_terms.T
-        H_quad = get_multidot([left, H, right])
+        H_quad = get_md([left, H, right])
         s_cov = rho * np.dot(s, s.T)
         H = H_quad + s_cov
 

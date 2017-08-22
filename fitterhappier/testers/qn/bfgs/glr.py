@@ -1,8 +1,8 @@
 import numpy as np
 
 from fitterhappier.qn import BFGSSolver as BFGSS
-from data.loaders.shortcuts import get_LRGL
-from data.servers.batch import BatchServer as BS
+from whitehorses.loaders.shortcuts import get_LRGL
+from whitehorses.servers.batch import BatchServer as BS
 from models import LinearRegression as LR
 
 class GaussianLinearRegressionBFGSTester:
@@ -27,15 +27,15 @@ class GaussianLinearRegressionBFGSTester:
         self.init_params = init_params
         self.w = np.random.randn(self.p, 1)
         
-        loader = get_LGRL(
+        loader = get_LRGL(
             self.n, 
-            [self.p],
+            [self.p - 1],
             ws=[self.w],
             noisys=[self.noisy],
             bias=True)[0]
 
         self.server = BS(loader)
-        self.model = LR(self.p)
+        self.model = LR(self.p, 0)
         self.w_hat = None
 
     def get_parameters(self):
@@ -48,7 +48,7 @@ class GaussianLinearRegressionBFGSTester:
 
     def run(self):
 
-        bfgs = BFGS(
+        bfgs = BFGSS(
             self.model,
             self.server,
             initial_estimate=self.init_params,

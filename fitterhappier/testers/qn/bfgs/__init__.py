@@ -1,1 +1,1 @@
-from .bfgs import GaussianLinearRegressionBFGSTester
+from .glr import GaussianLinearRegressionBFGSTester

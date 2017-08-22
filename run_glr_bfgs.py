@@ -1,6 +1,6 @@
 import click
 
-from testers.qn.bfgs import GaussianLinearRegressionBFGSTester as GLRBFGST
+from fitterhappier.testers.qn.bfgs import GaussianLinearRegressionBFGSTester as GLRBFGST
 
 @click.command()
 @click.option('--n', default=1000)
@@ -24,7 +24,7 @@ def run_it_all_day_bb(
 
     tester.run()
 
-    print tester.objectives
+    print(tester.objectives)
 
 if __name__=='__main__':
     run_it_all_day_bb()
