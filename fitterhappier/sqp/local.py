@@ -78,8 +78,11 @@ class LocalSQPOptimizer:
             lcgo.run()
 
             result = lcgo.get_parameters()
-            theta = np.copy(result[:self.d])
+            p = np.copy(result[:self.d])
             lam = np.copy(result[self.d:])
+
+            theta += p
+
             params = (theta, lam)
 
             if t > 0:
