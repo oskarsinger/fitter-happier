@@ -8,7 +8,7 @@ class LocalSQPOptimizer:
         model,
         data_server,
         max_iters=100,
-        epsilon=0.01,
+        epsilon=0.001,
         theta_init=None, 
         lam_init=None):
 
@@ -59,6 +59,9 @@ class LocalSQPOptimizer:
         while t < self.max_iters and not converged:
 
             obj = self._get_obj(params)
+
+            self.objectives.append(obj)
+
             grad = self._get_grad(params)
             cons = self._get_cons(params) 
             cons_grad = self._get_cons_grad(params)
@@ -79,8 +82,9 @@ class LocalSQPOptimizer:
             lam = np.copy(result[self.d:])
             params = (theta, lam)
 
-            # TODO: test/update convergence criteria
-            # TODO: specialize to the block structure of A
+            if t > 0:
+                obj_prev = self.objectives[-1]
+                converged = np.abs(obj_prev - obj) < self.epsilon
 
             t += 1
 
