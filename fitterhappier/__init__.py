@@ -5,8 +5,8 @@ from . import matrix
 from . import distributed
 from . import weird
 from . import sqp
+from . import conjugate
 
 from .diag import DoubleIncrementalAggregatedGradient
 from .svrg import StochasticVarianceReducedGradient 
-from .conjugate import LinearConjugateGradientOptimizer
 from .gradient import Gradient
