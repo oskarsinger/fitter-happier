@@ -4,6 +4,7 @@ from . import qn
 from . import matrix
 from . import distributed
 from . import weird
+from . import sqp
 
 from .diag import DoubleIncrementalAggregatedGradient
 from .svrg import StochasticVarianceReducedGradient 
