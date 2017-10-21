@@ -7,6 +7,8 @@ packages = [
     'matrix',
     'qn',
     'distributed',
+    'coordinate',
+    'conjugate',
     'testers',
     'testers.aide',
     'testers.fsvrg']
