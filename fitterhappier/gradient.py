@@ -1,6 +1,6 @@
 from drrobert.arithmetic import get_moving_avg as get_ma
 
-class GradientOptimizer:
+class GradientServer:
 
     def __init__(self, beta=None, dual_avg=False):
 

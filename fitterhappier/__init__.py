@@ -10,4 +10,4 @@ from . import coordinate
 
 from .diag import DoubleIncrementalAggregatedGradient
 from .svrg import StochasticVarianceReducedGradient 
-from .gradient import Gradient
+from .gradient import GradientServer

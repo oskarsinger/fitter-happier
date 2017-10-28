@@ -1,6 +1,6 @@
 import numpy as np
 
-from .. import LinearConjugateGradientOptimizer
+from fitterhappier.conjugate import LinearConjugateGradientOptimizer as LCGO
 
 class LocalSQPOptimizer:
 
@@ -73,7 +73,7 @@ class LocalSQPOptimizer:
             A[self.d:,:self.d] += cons_grad
             A[:self.d,self.d:] += -cons_grad.T
 
-            lcgo = LinearConjugateGradientOptimizer(A, b)
+            lcgo = LCGO(A, b)
 
             lcgo.run()
 

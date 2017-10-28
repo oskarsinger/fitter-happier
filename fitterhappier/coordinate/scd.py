@@ -53,7 +53,7 @@ class StochasticCoordinateDescentOptimizer:
                         order[:self.cushion])
                 
                 batches = batches.reshape((
-                    self.num_batches
+                    self.num_batches,
                     self.batch_size))
             else:
                 batches = order
