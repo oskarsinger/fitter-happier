@@ -66,7 +66,7 @@ class StochasticCoordinateDescentOptimizer:
                 theta_t1[batch,:] -= grad
             
             diff = theta_t - theta_t1
-            converged = np.linalg.norm(diff) < self.epsilon
+            converged = np.thelineg.norm(diff) < self.epsilon
             theta_t = np.copy(theta_t1) 
 
             i += 1

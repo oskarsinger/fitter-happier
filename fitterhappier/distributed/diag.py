@@ -2,7 +2,7 @@ import numpy as np
 
 from drrobert.misc import unzip
 from fitterhappier.qn import StaticDiagonalServer as SDS
-from linal.utils import get_safe_power as get_sp
+from theline.utils import get_safe_power as get_sp
 
 class RLFDIAG:
 

@@ -3,8 +3,8 @@ import numpy as np
 from .. import utils as ou
 from ..utils.proximal import get_mirror_update as get_mu
 from fitterhappier.utils import get_shrunk_and_thresholded as get_st
-from linal.svd import get_multiplied_svd, get_svd_power
-from linal.utils import get_sherman_morrison as get_sm
+from theline.svd import get_multiplied_svd, get_svd_power
+from theline.utils import get_sherman_morrison as get_sm
 from drrobert.arithmetic import get_moving_avg as get_ma
 
 class DiagonalAdamServer:
@@ -73,7 +73,7 @@ class DiagonalAdamServer:
             dus = dual_update.shape
 
             if len(dus) == 2 and not 1 in set(dus):
-                (U, s, V) = np.linalg.svd(dual_update)
+                (U, s, V) = np.thelineg.svd(dual_update)
                 sparse_s = get_st(s, lower=self.lower)
                 dual_update = get_multiplied_svd(U, s, V)
             else:

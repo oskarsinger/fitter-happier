@@ -1,7 +1,7 @@
 import numpy as np
 import fitterhappier.utils as ou
 
-from linal.utils import get_safe_power as get_sp
+from theline.utils import get_safe_power as get_sp
 
 class StaticDiagonalServer:
 

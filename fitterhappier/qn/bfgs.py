@@ -1,7 +1,7 @@
 import numpy as np
 
 from scipy.optimize import line_search
-from linal.utils import get_multi_dot as get_md
+from theline.utils import get_multi_dot as get_md
 
 # TODO: cite Mokhtari paper
 class RegularizedStochasticBFGSServer:
@@ -94,7 +94,7 @@ class BFGSSolver:
         
         gradt = self._get_gradient(estimatet)
         gradt1 = None
-        grad_norm = np.linalg.norm(gradt)
+        grad_norm = np.thelineg.norm(gradt)
         H = np.eye(self.d)
         t = 0
 
@@ -109,7 +109,7 @@ class BFGSSolver:
 
             # Compute new gradient and y
             gradt1 = self._get_gradient(estimatet1)
-            grad_norm = np.linalg.norm(gradt1)
+            grad_norm = np.thelineg.norm(gradt1)
             y = gradt1 - gradt
 
             # Update gradient and esimtate state
