@@ -27,7 +27,7 @@ class LinearConjugateGradientOptimizer:
             self.b.shape[1])
         r = self.b - np.dot(self.A, x)
         d = np.copy(r)
-        delta = np.thelineg.norm(r)**2
+        delta = np.linalg.norm(r)**2
         threshold = self.epsilon**2 * delta
         i = 0
 
@@ -43,7 +43,7 @@ class LinearConjugateGradientOptimizer:
             else:
                 r = r - alpha * q
 
-            new_delta = np.thelineg.norm(r)**2
+            new_delta = np.linalg.norm(r)**2
             beta = new_delta / delta
             delta = new_delta
             d = r + beta * d

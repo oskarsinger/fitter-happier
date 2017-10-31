@@ -7,7 +7,7 @@ import drrobert.debug as drdb
 
 def get_lp_bregman_div_and_grad(p, ip=np.dot):
 
-    breg_func = lambda x: np.thelineg.norm(x, ord=p)
+    breg_func = lambda x: np.linalg.norm(x, ord=p)
     breg_grad = lambda x: get_lp_norm_gradient(x, p) 
 
     return get_bregman_div_and_grad(breg_func, breg_grad, ip=ip)

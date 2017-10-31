@@ -73,7 +73,7 @@ class DiagonalAdamServer:
             dus = dual_update.shape
 
             if len(dus) == 2 and not 1 in set(dus):
-                (U, s, V) = np.thelineg.svd(dual_update)
+                (U, s, V) = np.linalg.svd(dual_update)
                 sparse_s = get_st(s, lower=self.lower)
                 dual_update = get_multiplied_svd(U, s, V)
             else:

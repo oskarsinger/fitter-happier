@@ -26,7 +26,7 @@ class SchattenPCOMIDOptimizer:
     def get_update(self, parameters, gradient, eta):
 
         if any([x is None for x in [self.u, self.s, self.V]]):
-            (self.U, self.s, self.V) = np.thelineg.svd(parameters)
+            (self.U, self.s, self.V) = np.linalg.svd(parameters)
 
         self.num_rounds += 1
         self.grad = ou.get_avg_search_direction(
@@ -50,7 +50,7 @@ class SchattenPCOMIDOptimizer:
 
     def _get_primal(self, dual_update):
 
-        (self.U, dual_s, self.V) = np.thelineg.svd(dual_update)
+        (self.U, dual_s, self.V) = np.linalg.svd(dual_update)
 
         if self.lower is not None:
             dual_s = get_st(dual_s, lower=self.lower)

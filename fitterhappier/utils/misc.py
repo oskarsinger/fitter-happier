@@ -30,7 +30,7 @@ def get_simplex_projection(x):
 
 def is_converged(previous, current, eps, verbose):
 
-    dist = np.thelineg.norm(previous - current)
+    dist = np.linalg.norm(previous - current)
 
     if verbose:
         print("\tChecking for convergence")
@@ -41,7 +41,7 @@ def is_converged(previous, current, eps, verbose):
 def get_lp_norm_gradient(x, p):
 
     vec = np.sign(x) * get_safe_power(np.absolute(x), p-1)
-    constant = np.thelineg.norm(x, p)**(-p+2)
+    constant = np.linalg.norm(x, p)**(-p+2)
 
     return constant * vec
 
