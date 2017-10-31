@@ -52,9 +52,10 @@ class StochasticCoordinateDescentOptimizer:
                         order,
                         order[:self.cushion])
                 
-                batches = batches.reshape((
-                    self.num_batches,
-                    self.batch_size))
+                batches = np.sort(
+                    batches.reshape((
+                        self.num_batches,
+                        self.batch_size)))
             else:
                 batches = order
             
