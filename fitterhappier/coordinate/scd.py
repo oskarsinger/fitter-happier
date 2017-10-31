@@ -5,6 +5,7 @@ class StochasticCoordinateDescentOptimizer:
 
     def __init__(self, 
         p, 
+        get_objective,
         get_gradient,
         epsilon=10**(-5),
         batch_size=1, 
@@ -12,6 +13,7 @@ class StochasticCoordinateDescentOptimizer:
         theta_init=None):
         
         self.p = p
+        self.get_objective = get_objective
         self.get_gradient = get_gradient
         self.epsilon = epsilon
         self.batch_size = batch_size
@@ -28,6 +30,8 @@ class StochasticCoordinateDescentOptimizer:
 
         if self.cushion > 0:
             self.num_batches += 1
+
+        self.objectives = []
 
     def get_parameters(self):
 
@@ -68,6 +72,9 @@ class StochasticCoordinateDescentOptimizer:
                     theta_t1[batch,:] -= grad[:,0]
                 else:
                     theta_t1[batch,:] -= grad
+
+            self.objectives.append(
+                self.get_objective(theta_t1))
             
             diff = theta_t - theta_t1
             converged = np.linalg.norm(diff) < self.epsilon
