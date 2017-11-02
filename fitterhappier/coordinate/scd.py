@@ -24,9 +24,9 @@ class StochasticCoordinateDescentOptimizer:
 
         self.theta_init = theta_init
         self.theta = None
-        self.cushion = 0 if self.batch_size > 1 \
+        self.cushion = 0 if self.batch_size == 1 \
             else self.p % self.batch_size
-        self.num_batches = self.p / self.batch_size
+        self.num_batches = int(self.p / self.batch_size)
 
         if self.cushion > 0:
             self.num_batches += 1
@@ -51,11 +51,9 @@ class StochasticCoordinateDescentOptimizer:
             batches = None
 
             if self.batch_size > 1:
-                if self.cushion > 0:
-                    batches = np.hstack(
-                        order,
-                        order[:self.cushion])
-                
+                batches = np.hstack([
+                    order,
+                    order[:self.cushion]])
                 batches = np.sort(
                     batches.reshape((
                         self.num_batches,
@@ -67,16 +65,20 @@ class StochasticCoordinateDescentOptimizer:
                 grad = self.get_gradient(
                     theta_t,
                     batch)
+                #print(np.linalg.norm(grad))
 
                 if np.isscalar(batch):
                     theta_t1[batch,:] -= grad[:,0]
                 else:
                     theta_t1[batch,:] -= grad
 
+            print(np.all(theta_t1 >= 0))
+
             self.objectives.append(
                 self.get_objective(theta_t1))
             
             diff = theta_t - theta_t1
+            print(np.linalg.norm(diff))
             converged = np.linalg.norm(diff) < self.epsilon
             theta_t = np.copy(theta_t1) 
 
