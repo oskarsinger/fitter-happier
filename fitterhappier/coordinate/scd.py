@@ -68,17 +68,17 @@ class StochasticCoordinateDescentOptimizer:
                 #print(np.linalg.norm(grad))
 
                 if np.isscalar(batch):
-                    theta_t1[batch,:] -= grad[:,0]
+                    theta_t1[batch,:] = theta_t[batch,:] - grad#[:,0]
                 else:
-                    theta_t1[batch,:] -= grad
+                    theta_t1[batch,:] = theta_t[batch,:] - grad
 
-            print(np.all(theta_t1 >= 0))
+            if not np.all(theta_t1 >= 0):
+                print(theta_t1)
 
             self.objectives.append(
                 self.get_objective(theta_t1))
             
             diff = theta_t - theta_t1
-            print(np.linalg.norm(diff))
             converged = np.linalg.norm(diff) < self.epsilon
             theta_t = np.copy(theta_t1) 
 
