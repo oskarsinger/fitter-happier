@@ -7,6 +7,7 @@ class StochasticCoordinateDescentOptimizer:
         p, 
         get_objective,
         get_gradient,
+        get_projected,
         epsilon=10**(-5),
         batch_size=1, 
         max_rounds=10,
@@ -15,6 +16,7 @@ class StochasticCoordinateDescentOptimizer:
         self.p = p
         self.get_objective = get_objective
         self.get_gradient = get_gradient
+        self.get_projected = get_projected
         self.epsilon = epsilon
         self.batch_size = batch_size
         self.max_rounds = max_rounds
@@ -22,7 +24,7 @@ class StochasticCoordinateDescentOptimizer:
         if theta_init is None:
             theta_init = np.zeros((self.p, 1))
 
-        self.theta_init = theta_init
+        self.theta_init = self.get_projected(theta_init)
         self.theta = None
         self.cushion = 0 if self.batch_size == 1 \
             else self.p % self.batch_size
@@ -70,6 +72,7 @@ class StochasticCoordinateDescentOptimizer:
                     batch)
 
                 theta_t1[batch,:] = theta_t[batch,:] - grad
+                theta_t1 = self.get_projected(theta_t1)
 
             self.objectives.append(
                 self.get_objective(theta_t1))
