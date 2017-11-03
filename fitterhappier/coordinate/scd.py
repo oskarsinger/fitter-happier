@@ -45,6 +45,9 @@ class StochasticCoordinateDescentOptimizer:
         theta_t = np.copy(self.theta_init)
         theta_t1 = np.zeros_like(theta_t)
 
+        self.objectives.append(
+            self.get_objective(theta_t))
+
         while i < self.max_rounds and not converged:
             np.random.shuffle(order)
 
@@ -63,16 +66,10 @@ class StochasticCoordinateDescentOptimizer:
             
             for batch in batches:
                 grad = self.get_gradient(
-                    theta_t,
+                    theta_t1,
                     batch)
 
-                if np.isscalar(batch):
-                    theta_t1[batch,:] = theta_t[batch,:] - grad#[:,0]
-                else:
-                    theta_t1[batch,:] = theta_t[batch,:] - grad
-
-            if np.any(theta_t1 < 0):
-                print(theta_t1)
+                theta_t1[batch,:] = theta_t[batch,:] - grad
 
             self.objectives.append(
                 self.get_objective(theta_t1))
