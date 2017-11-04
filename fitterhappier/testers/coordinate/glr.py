@@ -18,7 +18,8 @@ class LRSCDTester:
         self.epsilon = epsilon
 
         if theta_init is None:
-            theta_init = np.random.randn(self.ds.rows(), 1)
+            theta_init = np.random.randn(
+                self.ds.cols(), 1)
         else:
             theta_init = np.copy(theta_init)
 
@@ -43,7 +44,7 @@ class LRSCDTester:
         get_projected = lambda theta: self.model.get_projected(
             self.data, theta)
         scdo = SCDO(
-            self.ds.rows(),
+            self.ds.cols(),
             get_obj,
             get_grad,
             get_projected,

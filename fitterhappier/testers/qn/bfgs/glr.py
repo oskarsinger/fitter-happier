@@ -3,7 +3,7 @@ import numpy as np
 from fitterhappier.qn import BFGSSolver as BFGSS
 from whitehorses.loaders.shortcuts import get_LRGL
 from whitehorses.servers.batch import BatchServer as BS
-from models import LinearRegressionModel as LR
+from models.regression import LinearRegressionModel as LR
 
 class GaussianLinearRegressionBFGSTester:
 
