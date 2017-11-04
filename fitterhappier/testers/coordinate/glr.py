@@ -3,7 +3,7 @@ import numpy as np
 from models.regression import LinearRegressionModel as LR
 from fitterhappier.coordinate import StochasticCoordinateDescentOptimizer as SCDO
 
-class LRSDCATester:
+class LRSCDTester:
 
     def __init__(self,
         data_server,
