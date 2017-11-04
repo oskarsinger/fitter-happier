@@ -71,14 +71,14 @@ class StochasticCoordinateDescentOptimizer:
                     theta_t1,
                     batch)
 
-                theta_t1[batch,:] = theta_t[batch,:] - grad
+                theta_t1[batch,:] = theta_t[batch,:] - 0.0001 * grad / np.sqrt(i+ 1)
                 theta_t1 = self.get_projected(theta_t1)
 
             self.objectives.append(
                 self.get_objective(theta_t1))
             
             diff = theta_t - theta_t1
-            converged = np.linalg.norm(diff) < self.epsilon
+            converged = self.epsilon > np.abs(self.objectives[-1] - self.objectives[-2])#np.linalg.norm(diff)
             theta_t = np.copy(theta_t1) 
 
             i += 1
