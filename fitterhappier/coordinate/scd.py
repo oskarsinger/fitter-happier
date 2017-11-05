@@ -1,6 +1,7 @@
 import numpy as np
 
 from fitterhappier.qn import CoordinateDiagonalAdamServer as CDAS
+from fitterhappier.stepsize import InversePowerScheduler as IPS
 
 # TODO: quasi-Newton stuff gets weird here; figure it out
 class StochasticCoordinateDescentOptimizer:
@@ -13,6 +14,8 @@ class StochasticCoordinateDescentOptimizer:
         epsilon=10**(-5),
         batch_size=1, 
         max_rounds=10,
+        eta0=10**(-4)
+        eta_scheduler=None,
         qn_server=None,
         theta_init=None):
         
@@ -23,9 +26,15 @@ class StochasticCoordinateDescentOptimizer:
         self.epsilon = epsilon
         self.batch_size = batch_size
         self.max_rounds = max_rounds
+        self.eta0 = eta0
+
+        if eta_scheduler is None:
+            eta_scheduler = IPS(self.eta0)
+
+        self.eta_scheduler = eta_scheduler
 
         if qn_server is None:
-            qn_server = CDAS()
+            qn_server = CDAS(self.p)
 
         self.qn = qn_server
 
@@ -62,6 +71,7 @@ class StochasticCoordinateDescentOptimizer:
             np.random.shuffle(order)
 
             batches = None
+            eta = self.eta_scheduler.get_stepsize()
 
             if self.batch_size > 1:
                 batches = np.hstack([
@@ -80,14 +90,20 @@ class StochasticCoordinateDescentOptimizer:
                     batch)
 
                 # TODO: Change this to use the coordinate quasi-Newton server
-                theta_t1[batch,:] = theta_t[batch,:] - 0.0001 * grad / np.sqrt(i+ 1)
+                theta_t1[batch,:] = self.qn.get_update(
+                    parameters[batch,:],
+                    gradient,
+                    eta,
+                    batch)
+                #theta_t1[batch,:] = theta_t[batch,:] - 0.00001 * grad / np.sqrt(i+ 1)
+                # TODO: is there a more elegant way to do the projection?
                 theta_t1 = self.get_projected(theta_t1)
 
             self.objectives.append(
                 self.get_objective(theta_t1))
             
-            diff = theta_t - theta_t1
-            converged = self.epsilon > np.abs(self.objectives[-1] - self.objectives[-2])#np.linalg.norm(diff)
+            diff = self.objectives[-1] - self.objectives[-2]
+            converged = self.epsilon > np.abs(diff)
             theta_t = np.copy(theta_t1) 
 
             i += 1

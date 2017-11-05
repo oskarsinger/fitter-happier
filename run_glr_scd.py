@@ -8,6 +8,7 @@ from whitehorses.servers.batch import BatchServer as BS
 @click.command()
 @click.option('--n', default=1000)
 @click.option('--p', default=500)
+@click.option('--batch-size', default=1)
 @click.option('--max-rounds', default=100)
 @click.option('--epsilon', default=10**(-5))
 @click.option('--bias', default=False)
@@ -15,6 +16,7 @@ from whitehorses.servers.batch import BatchServer as BS
 def run_it_all_day_bb(
     n,
     p,
+    batch_size,
     max_rounds,
     epsilon,
     bias,
@@ -26,6 +28,7 @@ def run_it_all_day_bb(
     tester = LRSCDT(
         data_server,
         max_rounds=max_rounds,
+        batch_size=batch_size,
         epsilon=epsilon)
 
     tester.run()
