@@ -4,8 +4,12 @@ from .. import utils as ou
 from ..utils.proximal import get_mirror_update as get_mu
 from fitterhappier.utils import get_shrunk_and_thresholded as get_st
 from theline.svd import get_multiplied_svd, get_svd_power
-from theline.utils import get_sherman_morrison as get_sm
 from drrobert.arithmetic import get_moving_avg as get_ma
+
+class CoordinateDiagonalAdamServer:
+
+    def __init__(self):
+        pass
 
 class DiagonalAdamServer:
 
@@ -16,7 +20,6 @@ class DiagonalAdamServer:
         lower=None, 
         verbose=False):
 
-        # TODO: try to enforce correct step-size sequence for RDA
         self.delta = delta
         self.beta1 = beta1
         self.beta2 = beta2
@@ -56,8 +59,6 @@ class DiagonalAdamServer:
         return mirror_update
 
     def _get_dual(self, parameters):
-
-        print(self.num_rounds)
 
         denom = 1 - self.beta2**(self.num_rounds)
         sm_hat = self.second_moment / denom

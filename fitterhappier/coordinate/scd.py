@@ -1,5 +1,7 @@
 import numpy as np
 
+from fitterhappier.qn import CoordinateDiagonalAdamServer as CDAS
+
 # TODO: quasi-Newton stuff gets weird here; figure it out
 class StochasticCoordinateDescentOptimizer:
 
@@ -11,6 +13,7 @@ class StochasticCoordinateDescentOptimizer:
         epsilon=10**(-5),
         batch_size=1, 
         max_rounds=10,
+        qn_server=None,
         theta_init=None):
         
         self.p = p
@@ -20,6 +23,11 @@ class StochasticCoordinateDescentOptimizer:
         self.epsilon = epsilon
         self.batch_size = batch_size
         self.max_rounds = max_rounds
+
+        if qn_server is None:
+            qn_server = CDAS()
+
+        self.qn = qn_server
 
         if theta_init is None:
             theta_init = np.zeros((self.p, 1))
@@ -71,6 +79,7 @@ class StochasticCoordinateDescentOptimizer:
                     theta_t1,
                     batch)
 
+                # TODO: Change this to use the coordinate quasi-Newton server
                 theta_t1[batch,:] = theta_t[batch,:] - 0.0001 * grad / np.sqrt(i+ 1)
                 theta_t1 = self.get_projected(theta_t1)
 
