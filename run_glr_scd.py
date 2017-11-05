@@ -1,5 +1,7 @@
 import click
 
+import numpy as np
+
 from fitterhappier.testers.coordinate import LRSCDTester as LRSCDT
 from whitehorses.loaders.simple import GaussianLoader as GL
 from whitehorses.loaders.supervised import LinearRegressionGaussianLoader as LRGL
@@ -32,6 +34,9 @@ def run_it_all_day_bb(
         epsilon=epsilon)
 
     tester.run()
+
+    w_hat = tester.get_parameters()
+    print(np.linalg.norm(w_hat - lrgl.w))
 
     print(tester.objectives)
 
