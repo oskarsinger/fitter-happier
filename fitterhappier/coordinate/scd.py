@@ -1,6 +1,6 @@
 import numpy as np
 
-from fitterhappier.qn import CoordinateDiagonalAdamServer as CDAS
+from fitterhappier.qn import StochasticCoordinateDiagonalAdamServer as SCDAS
 from fitterhappier.stepsize import InversePowerScheduler as IPS
 
 # TODO: quasi-Newton stuff gets weird here; figure it out
@@ -14,7 +14,7 @@ class StochasticCoordinateDescentOptimizer:
         epsilon=10**(-5),
         batch_size=1, 
         max_rounds=10,
-        eta0=10**(-4)
+        eta0=10**(-1),
         eta_scheduler=None,
         qn_server=None,
         theta_init=None):
@@ -34,7 +34,7 @@ class StochasticCoordinateDescentOptimizer:
         self.eta_scheduler = eta_scheduler
 
         if qn_server is None:
-            qn_server = CDAS(self.p)
+            qn_server = SCDAS(self.p)
 
         self.qn = qn_server
 
@@ -89,13 +89,11 @@ class StochasticCoordinateDescentOptimizer:
                     theta_t1,
                     batch)
 
-                # TODO: Change this to use the coordinate quasi-Newton server
                 theta_t1[batch,:] = self.qn.get_update(
-                    parameters[batch,:],
-                    gradient,
+                    theta_t[batch,:],
+                    grad,
                     eta,
                     batch)
-                #theta_t1[batch,:] = theta_t[batch,:] - 0.00001 * grad / np.sqrt(i+ 1)
                 # TODO: is there a more elegant way to do the projection?
                 theta_t1 = self.get_projected(theta_t1)
 

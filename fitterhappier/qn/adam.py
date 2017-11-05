@@ -44,7 +44,7 @@ class StochasticCoordinateDiagonalAdamServer:
         self.denom2_subtractor[batch,:] *= self.beta2
 
         # Update the link function
-        denom = 1 - self.self.denom2_subtractor[batch,:]
+        denom = 1 - self.denom2_subtractor[batch,:]
         sm_hat = self.second_moment[batch,:] / denom
         
         self.H = np.power(sm_hat, 0.5) + self.delta
