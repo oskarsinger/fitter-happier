@@ -34,7 +34,7 @@ class StochasticCoordinateDescentOptimizer:
         self.eta_scheduler = eta_scheduler
 
         if qn_server is None:
-            qn_server = SCDAS(self.p)
+            qn_server = SCDAS(self.p, beta1=0.99, beta2=0.999)
 
         self.qn = qn_server
 
