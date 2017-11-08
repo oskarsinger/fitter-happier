@@ -48,9 +48,15 @@ class GaussianLinearRegressionBFGSTester:
 
     def run(self):
 
+        self.data = self.server.get_data()
+        get_gradient = lambda theta: self.model.get_gradient(
+            self.data, theta)
+        get_objective = lambda theta: self.model.get_objective(
+            self.data, theta)
         bfgs = BFGSS(
-            self.model,
-            self.server,
+            get_objective,
+            get_gradient,
+            self.server.cols(),
             initial_estimate=self.init_params,
             max_rounds=self.max_rounds,
             epsilon=self.epsilon)

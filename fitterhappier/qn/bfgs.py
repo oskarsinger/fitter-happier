@@ -3,32 +3,6 @@ import numpy as np
 from scipy.optimize import line_search
 from theline.utils import get_multi_dot as get_md
 
-# TODO: cite Mokhtari paper
-class RegularizedStochasticBFGSServer:
-
-    def __init__(self):
-        pass
-
-    def get_update(self):
-        pass
-
-# TODO: cite Schraudolph paper
-class OnlineLBFGSServer:
-
-    def __init__(self):
-        pass
-
-    def get_update(self):
-        pass
-
-class OnlineBFGSServer:
-
-    def __init__(self):
-        pass
-
-    def get_update(self):
-        pass
-
 # TODO: cite Nocedal and Wright
 class LBFGSServer:
 
@@ -42,18 +16,18 @@ class LBFGSServer:
 class BFGSSolver:
 
     def __init__(self, 
-        model,
-        server,
+        get_objective,
+        get_gradient,
+        d,
         initial_estimate=None,
         max_rounds=100,
         epsilon=10**(-5)):
 
-        self.model = model
-        self.server = server
+        self.get_objective = get_objective
+        self.get_gradient = get_gradient
+        self.d = d
         self.max_rounds = max_rounds
         self.epsilon = epsilon
-
-        self.d = self.model.get_parameter_shape()[0]
 
         if initial_estimate is None:
             initial_estimate = np.random.randn(self.d, 1)
@@ -61,7 +35,6 @@ class BFGSSolver:
         self.initial_estimate = initial_estimate
 
         self.w_hat = None
-        self.data = self.server.get_data()
         self.objectives = []
 
     def get_parameters(self):
@@ -72,27 +45,15 @@ class BFGSSolver:
         else:
             return np.copy(self.w_hat)
 
-    def _get_objective(self, estimate):
-
-        return self.model.get_objective(
-            self.data,
-            estimate)
-
-    def _get_gradient(self, estimate):
-
-        return self.model.get_gradient(
-            self.data,
-            estimate)
-
     def compute_parameters(self):
 
         estimatet = np.copy(self.initial_estimate)
         estimatet1 = None
 
         self.objectives.append(
-            self._get_objective(estimatet))
+            self.get_objective(estimatet))
         
-        gradt = self._get_gradient(estimatet)
+        gradt = self.get_gradient(estimatet)
         gradt1 = None
         grad_norm = np.linalg.norm(gradt)
         H = np.eye(self.d)
@@ -105,10 +66,10 @@ class BFGSSolver:
             estimatet1 = estimatet + s
 
             self.objectives.append(
-                self._get_objective(estimatet1))
+                self.get_objective(estimatet1))
 
             # Compute new gradient and y
-            gradt1 = self._get_gradient(estimatet1)
+            gradt1 = self.get_gradient(estimatet1)
             grad_norm = np.linalg.norm(gradt1)
             y = gradt1 - gradt
 
@@ -128,8 +89,8 @@ class BFGSSolver:
         p = np.dot(-H, grad)
         oofv = None if t == 0 else self.objectives[-2]
         results = line_search(
-            self._get_objective,
-            lambda x: self._get_gradient(x)[:,0],
+            self.get_objective,
+            lambda x: self.get_gradient(x)[:,0],
             estimate,
             p,
             gfk=grad[:,0],
