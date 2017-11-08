@@ -4,21 +4,43 @@ from scipy.optimize import line_search
 from theline.utils import get_multi_dot as get_md
 
 # TODO: cite Nocedal and Wright
-class LBFGSServer:
+class LBFGSSolver:
 
     def __init__(self):
         pass
 
-    def get_update(self):
-        pass
+    def get_parameters(self):
+
+        if self.w_hat is None:
+            raise Exception(
+                'Parameters have not been computed.')
+        else:
+            return np.copy(self.w_hat)
+
+    def compute_parameters(self):
+
+        estimatet = np.copy(self.initial_estimate)
+        estimatet1 = None
+
+        self.objectives.append(
+            self.get_objective(estimatet))
+        
+        gradt = self.get_gradient(estimatet)
+        gradt1 = None
+        grad_norm = np.linalg.norm(gradt)
+        H = np.eye(self.d)
+        t = 0
+
+        while grad_norm > self.epsilon and t < self.max_rounds:
 
 # TODO: cite Nocedal and Wright
 class BFGSSolver:
 
     def __init__(self, 
+        d,
         get_objective,
         get_gradient,
-        d,
+        get_projected,
         initial_estimate=None,
         max_rounds=100,
         epsilon=10**(-5)):
@@ -64,6 +86,8 @@ class BFGSSolver:
             # Compute new estimate
             s = self._get_s(H, gradt, estimatet, t)
             estimatet1 = estimatet + s
+            # TODO: is this okay?
+            estimatet1 = self.get_projected(estimatet1)
 
             self.objectives.append(
                 self.get_objective(estimatet1))

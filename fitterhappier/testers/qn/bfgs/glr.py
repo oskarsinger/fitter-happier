@@ -53,10 +53,13 @@ class GaussianLinearRegressionBFGSTester:
             self.data, theta)
         get_objective = lambda theta: self.model.get_objective(
             self.data, theta)
+        get_projected = lambda theta: self.model.get_projected(
+            self.data, theta)
         bfgs = BFGSS(
+            self.server.cols(),
             get_objective,
             get_gradient,
-            self.server.cols(),
+            get_projected,
             initial_estimate=self.init_params,
             max_rounds=self.max_rounds,
             epsilon=self.epsilon)
