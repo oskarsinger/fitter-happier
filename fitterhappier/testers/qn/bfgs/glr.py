@@ -64,7 +64,7 @@ class GaussianLinearRegressionBFGSTester:
             max_rounds=self.max_rounds,
             epsilon=self.epsilon)
 
-        bfgs.compute_parameters()
+        bfgs.run()
 
         self.w_hat = bfgs.get_parameters()
         self.objectives = bfgs.objectives

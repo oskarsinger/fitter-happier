@@ -17,9 +17,9 @@ class LBFGSSolver:
         else:
             return np.copy(self.w_hat)
 
-    def compute_parameters(self):
+    def run(self):
 
-        estimatet = np.copy(self.initial_estimate)
+        estimatet = np.copy(self.theta_init)
         estimatet1 = None
 
         self.objectives.append(
@@ -32,6 +32,7 @@ class LBFGSSolver:
         t = 0
 
         while grad_norm > self.epsilon and t < self.max_rounds:
+            pass
 
 # TODO: cite Nocedal and Wright
 class BFGSSolver:
@@ -41,20 +42,21 @@ class BFGSSolver:
         get_objective,
         get_gradient,
         get_projected,
-        initial_estimate=None,
+        theta_init=None,
         max_rounds=100,
         epsilon=10**(-5)):
 
         self.get_objective = get_objective
         self.get_gradient = get_gradient
+        self.get_projected = get_projected
         self.d = d
         self.max_rounds = max_rounds
         self.epsilon = epsilon
 
-        if initial_estimate is None:
-            initial_estimate = np.random.randn(self.d, 1)
+        if theta_init is None:
+            theta_init = np.random.randn(self.d, 1)
 
-        self.initial_estimate = initial_estimate
+        self.theta_init = theta_init
 
         self.w_hat = None
         self.objectives = []
@@ -67,9 +69,9 @@ class BFGSSolver:
         else:
             return np.copy(self.w_hat)
 
-    def compute_parameters(self):
+    def run(self):
 
-        estimatet = np.copy(self.initial_estimate)
+        estimatet = np.copy(self.theta_init)
         estimatet1 = None
 
         self.objectives.append(
