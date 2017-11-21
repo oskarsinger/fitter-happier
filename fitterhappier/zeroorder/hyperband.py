@@ -34,6 +34,9 @@ class HyperBandOptimizer:
 
             n = int(np.ceil(self.eta**s * self.B / self.max_iter / (s + 1)))
             r = self.max_iter * self.eta**(-s)
+
+            print('\tNum Samples:', n, 'Max Iters:', r)
+
             samples = [self.get_sample() for _ in range(n)] 
 
             for i in range(s + 1):
@@ -42,12 +45,13 @@ class HyperBandOptimizer:
 
                 n_i = n * self.eta**(-i) 
                 r_i = r * self.eta**i
+
                 evals = [self.get_evaluation(sample, r_i)
                          for sample in samples]
 
-                print('\tEvaluations:', evals)
+                #print('\t\tEvaluations:', evals)
 
                 to_keep = np.argsort(evals)[:int(n_i / self.eta)]
-                samples = [sample[j] for j in to_keep]
+                samples = [samples[j] for j in to_keep]
 
         self.theta = samples[0]
