@@ -7,6 +7,7 @@ from . import weird
 from . import sqp
 from . import conjugate
 from . import coordinate
+from . import zeroorder
 
 from .diag import DoubleIncrementalAggregatedGradient
 from .svrg import StochasticVarianceReducedGradient 
