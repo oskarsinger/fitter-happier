@@ -1,6 +1,7 @@
 import numpy as np
 
 # TODO: cite HyperBand paper
+# TODO: add some diagnostic prints
 class HyperBandOptimizer:
 
     def __init__(self,
@@ -25,16 +26,27 @@ class HyperBandOptimizer:
 
     def run(self):
 
+        samples = None
+
         for s in reversed(range(s_max+1)):
+
+            print('HyperBand Outler Iteration:', s_max - s)
+
             n = int(np.ceil(self.eta**s * self.B / self.max_iter / (s + 1)))
             r = self.max_iter * self.eta**(-s)
             samples = [self.get_sample() for _ in range(n)] 
 
             for i in range(s + 1):
+
+                print('\tHyperBand Inner Iteration:', i)
+
                 n_i = n * self.eta**(-i) 
                 r_i = r * self.eta**i
                 evals = [self.get_evaluation(num_iters=r_i, sample=sample)
                          for sample in samples]
+
+                print('\tEvaluations:', evals)
+
                 to_keep = np.argsort(evals)[:int(n_i / self.eta)]
                 samples = [sample[j] for j in to_keep]
 
