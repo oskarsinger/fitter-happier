@@ -6,7 +6,7 @@ class HyperBandOptimizer:
 
     def __init__(self,
         get_sample,
-        get_validation_loss,
+        get_evaluation,
         max_iter=81,
         eta=3):
 
@@ -28,9 +28,9 @@ class HyperBandOptimizer:
 
         samples = None
 
-        for s in reversed(range(s_max+1)):
+        for s in reversed(range(self.s_max+1)):
 
-            print('HyperBand Outler Iteration:', s_max - s)
+            print('HyperBand Outler Iteration:', self.s_max - s)
 
             n = int(np.ceil(self.eta**s * self.B / self.max_iter / (s + 1)))
             r = self.max_iter * self.eta**(-s)
@@ -42,7 +42,7 @@ class HyperBandOptimizer:
 
                 n_i = n * self.eta**(-i) 
                 r_i = r * self.eta**i
-                evals = [self.get_evaluation(num_iters=r_i, sample=sample)
+                evals = [self.get_evaluation(sample, r_i)
                          for sample in samples]
 
                 print('\tEvaluations:', evals)
