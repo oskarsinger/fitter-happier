@@ -27,10 +27,11 @@ class HyperBandOptimizer:
     def run(self):
 
         samples = None
+        best = []
 
         for s in reversed(range(self.s_max+1)):
 
-            print('HyperBand Outler Iteration:', self.s_max - s)
+            print('HyperBand Outer Iteration:', self.s_max - s)
 
             n = int(np.ceil(self.eta**s * self.B / self.max_iter / (s + 1)))
             r = self.max_iter * self.eta**(-s)
@@ -43,15 +44,20 @@ class HyperBandOptimizer:
 
                 print('\tHyperBand Inner Iteration:', i)
 
-                n_i = n * self.eta**(-i) 
+                n_i = np.floor(n * self.eta**(-i))
                 r_i = r * self.eta**i
 
                 evals = [self.get_evaluation(sample, r_i)
                          for sample in samples]
+                argsorted = np.argsort(evals)
+                num_to_keep = int(n_i / self.eta)
 
-                #print('\t\tEvaluations:', evals)
+                if num_to_keep > 0:
+                    samples = [samples[j] for j in argsorted[:num_to_keep]]
+                else:
+                    best_sample = samples[argsorted[0]]
+                    best_evaluation = evals[argsorted[0]]
 
-                to_keep = np.argsort(evals)[:int(n_i / self.eta)]
-                samples = [samples[j] for j in to_keep]
+                    best.append((best_sample, best_evaluation))
 
-        self.theta = samples[0]
+        self.theta = sorted(best, key=lambda x:x[1])[0][0]
