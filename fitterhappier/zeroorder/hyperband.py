@@ -1,7 +1,7 @@
 import numpy as np
 
 # TODO: cite HyperBand paper
-# TODO: add some diagnostic prints
+# WARNING: evaluation is expected to be positive
 class HyperBandOptimizer:
 
     def __init__(self,
@@ -53,7 +53,7 @@ class HyperBandOptimizer:
                 num_to_keep = int(n_i / self.eta)
 
                 if num_to_keep > 0:
-                    samples = [samples[j] for j in argsorted[:num_to_keep]]
+                    samples = [samples[j] for j in argsorted[-num_to_keep:]]
                 else:
                     best_sample = samples[argsorted[0]]
                     best_evaluation = evals[argsorted[0]]
@@ -63,7 +63,8 @@ class HyperBandOptimizer:
 
                     best.append((best_sample, best_evaluation))
 
-        (self.theta, self.theta_eval) = sorted(best, key=lambda x:x[1])[0]
+        sorted_by_eval = sorted(best, key=lambda x:x[1])
+        (self.theta, self.theta_eval) = sorted_by_eval[-1]
 
         print('Final Sample:', self.theta)
         print('Final Eval:', self.theta_eval)
