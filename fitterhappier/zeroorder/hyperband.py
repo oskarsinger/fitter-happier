@@ -34,7 +34,7 @@ class HyperBandOptimizer:
             print('HyperBand Outer Iteration:', self.s_max - s)
 
             n = int(np.ceil(self.eta**s * self.B / self.max_iter / (s + 1)))
-            r = self.max_iter * self.eta**(-s)
+            r = np.ceil(self.max_iter * self.eta**(-s))
 
             print('\tNum Samples:', n, 'Max Iters:', r)
 
