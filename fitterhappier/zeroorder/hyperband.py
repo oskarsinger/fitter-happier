@@ -58,6 +58,12 @@ class HyperBandOptimizer:
                     best_sample = samples[argsorted[0]]
                     best_evaluation = evals[argsorted[0]]
 
+                    print('Sample:', best_sample)
+                    print('Evaluation:', best_evaluation)
+
                     best.append((best_sample, best_evaluation))
 
-        self.theta = sorted(best, key=lambda x:x[1])[0][0]
+        (self.theta, self.theta_eval) = sorted(best, key=lambda x:x[1])[0]
+
+        print('Final Sample:', self.theta)
+        print('Final Eval:', self.theta_eval)
