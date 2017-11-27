@@ -1,6 +1,8 @@
 import numpy as np
 
 # TODO: cite HyperBand paper
+# TODO: consider running the winner of each outer loop to completion and comparing those results
+# TODO: consider paralellizing (with pathos) over both outer iterations and configurations within an inner loop round
 # WARNING: evaluation is expected to be positive
 class HyperBandOptimizer:
 
