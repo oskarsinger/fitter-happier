@@ -65,6 +65,8 @@ class HyperBandOptimizer:
 
                     best.append((best_sample, best_evaluation))
 
+        best = [(sample, self.get_evaluation(sample, self.max_iter))
+                for (sample, _) in best]
         sorted_by_eval = sorted(best, key=lambda x:x[1])
         (self.theta, self.theta_eval) = sorted_by_eval[-1]
 
