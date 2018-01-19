@@ -52,6 +52,7 @@ class HyperBandOptimizer:
                 evals = [self.get_evaluation(sample, r_i)
                          for sample in samples]
                 argsorted = np.argsort(evals)
+                print('argsorted', argsorted)
                 num_to_keep = int(n_i / self.eta)
 
                 if num_to_keep > 0:
