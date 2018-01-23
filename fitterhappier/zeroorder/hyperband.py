@@ -69,7 +69,7 @@ class ParallelHyperBandOptimizer:
 
         get_max_eval = lambda s: self.get_evaluation(s, self.max_iter)
         best_evals = ProcessPool(nodes=self.num_processes).amap(
-            get_max_eval, unzip(best)[0])
+            get_max_eval, unzip(best)[0]).get()
         best = zip(unzip(best)[0], best_evals)
         sorted_by_eval = sorted(best, key=lambda x:x[1])
         (self.theta, self.theta_eval) = sorted_by_eval[-1]
