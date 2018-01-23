@@ -1,8 +1,83 @@
 import numpy as np
 
+from pathos.multiprocessing import ProcessPool
+from drrobert.misc import unzip
+
+class ParallelHyperBandOptimizer:
+
+    def __init__(self,
+        get_sample,
+        get_evaluation,
+        max_iter=81,
+        num_processors=4,
+        eta=3):
+
+        self.get_sample = get_sample
+        self.get_evaluation = get_evaluation
+        self.max_iter = max_iter
+        self.num_processors = num_processors
+        self.eta = eta
+
+        self.s_max = int(
+            np.log(self.max_iter) / np.log(self.eta))
+        self.B = (self.s_max + 1) * self.max_iter
+        self.theta = None
+
+    def get_parameters(self):
+
+        return self.theta
+
+    def run(self):
+
+        samples = None
+        best = []
+
+        for s in reversed(range(self.s_max+1)):
+
+            print('HyperBand Outer Iteration:', self.s_max - s)
+
+            n = int(np.ceil(self.eta**s * self.B / self.max_iter / (s + 1)))
+            r = np.ceil(self.max_iter * self.eta**(-s))
+
+            print('\tNum Samples:', n, 'Max Iters:', r)
+
+            samples = [self.get_sample() for _ in range(n)] 
+
+            for i in range(s + 1):
+
+                print('\tHyperBand Inner Iteration:', i)
+
+                n_i = np.floor(n * self.eta**(-i))
+                r_i = r * self.eta**i
+                get_r_i_eval = lambda s: self.get_evaluation(s, r_i)
+
+                evals = ProcessPool(nodes=self.num_processes).amap(
+                    get_r_i_eval, samples).get()
+                argsorted = np.argsort(evals)
+                num_to_keep = int(n_i / self.eta)
+
+                if num_to_keep > 0:
+                    samples = [samples[j] for j in argsorted[-num_to_keep:]]
+                else:
+                    best_sample = samples[argsorted[0]]
+                    best_evaluation = evals[argsorted[0]]
+
+                    print('Sample:', best_sample)
+                    print('Evaluation:', best_evaluation)
+
+                    best.append((best_sample, best_evaluation))
+
+        get_max_eval = lambda s: self.get_evaluation(s, self.max_iter)
+        best_evals = ProcessPool(nodes=self.num_processes).amap(
+            get_max_evals, unzip(best)[0])
+        best = zip(unzip(best)[0], best_evals)
+        sorted_by_eval = sorted(best, key=lambda x:x[1])
+        (self.theta, self.theta_eval) = sorted_by_eval[-1]
+
+        print('Final Sample:', self.theta)
+        print('Final Eval:', self.theta_eval)
+
 # TODO: cite HyperBand paper
-# TODO: consider running the winner of each outer loop to completion and comparing those results
-# TODO: consider paralellizing (with pathos) over both outer iterations and configurations within an inner loop round
 # WARNING: evaluation is expected to be positive
 class HyperBandOptimizer:
 
@@ -52,7 +127,6 @@ class HyperBandOptimizer:
                 evals = [self.get_evaluation(sample, r_i)
                          for sample in samples]
                 argsorted = np.argsort(evals)
-                print('argsorted', argsorted)
                 num_to_keep = int(n_i / self.eta)
 
                 if num_to_keep > 0:
