@@ -9,13 +9,13 @@ class ParallelHyperBandOptimizer:
         get_sample,
         get_evaluation,
         max_iter=81,
-        num_processors=4,
+        num_processes=4,
         eta=3):
 
         self.get_sample = get_sample
         self.get_evaluation = get_evaluation
         self.max_iter = max_iter
-        self.num_processors = num_processors
+        self.num_processes = num_processes
         self.eta = eta
 
         self.s_max = int(
