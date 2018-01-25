@@ -51,8 +51,11 @@ class ParallelHyperBandOptimizer:
                 r_i = r * self.eta**i
                 get_r_i_eval = lambda s: self.get_evaluation(s, r_i)
 
+                print('\tBefore ProcessPool call')
+
                 evals = ProcessPool(nodes=self.num_processes).amap(
                     get_r_i_eval, samples).get()
+                print('\tAfter ProcessPool call')
                 argsorted = np.argsort(evals)
                 num_to_keep = int(n_i / self.eta)
 
