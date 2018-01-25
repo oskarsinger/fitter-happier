@@ -53,8 +53,8 @@ class ParallelHyperBandOptimizer:
 
                 print('\tBefore Pool call')
 
-                evals = ProcessPool(nodes=self.num_processes).imap(
-                    get_r_i_eval, samples).get()
+                evals = list(ProcessPool(nodes=self.num_processes).imap(
+                    get_r_i_eval, samples))
                 print('\tAfter Pool call')
                 argsorted = np.argsort(evals)
                 num_to_keep = int(n_i / self.eta)
@@ -71,8 +71,8 @@ class ParallelHyperBandOptimizer:
                     best.append((best_sample, best_evaluation))
 
         get_max_eval = lambda s: self.get_evaluation(s, self.max_iter)
-        best_evals = ProcessPool(nodes=self.num_processes).imap(
-            get_max_eval, unzip(best)[0]).get()
+        best_evals = list(ProcessPool(nodes=self.num_processes).imap(
+            get_max_eval, unzip(best)[0]))
         best = zip(unzip(best)[0], best_evals)
         sorted_by_eval = sorted(best, key=lambda x:x[1])
         (self.theta, self.theta_eval) = sorted_by_eval[-1]
