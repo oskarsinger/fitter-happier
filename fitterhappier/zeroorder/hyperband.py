@@ -1,6 +1,6 @@
 import numpy as np
 
-from pathos.multiprocessing import ProcessPool
+from pathos.threading import ThreadPool
 from drrobert.misc import unzip
 
 class ParallelHyperBandOptimizer:
@@ -51,11 +51,11 @@ class ParallelHyperBandOptimizer:
                 r_i = r * self.eta**i
                 get_r_i_eval = lambda s: self.get_evaluation(s, r_i)
 
-                print('\tBefore ProcessPool call')
+                print('\tBefore Pool call')
 
-                evals = ProcessPool(nodes=self.num_processes).amap(
+                evals = ThreadPool(nodes=self.num_processes).amap(
                     get_r_i_eval, samples).get()
-                print('\tAfter ProcessPool call')
+                print('\tAfter Pool call')
                 argsorted = np.argsort(evals)
                 num_to_keep = int(n_i / self.eta)
 
@@ -71,7 +71,7 @@ class ParallelHyperBandOptimizer:
                     best.append((best_sample, best_evaluation))
 
         get_max_eval = lambda s: self.get_evaluation(s, self.max_iter)
-        best_evals = ProcessPool(nodes=self.num_processes).amap(
+        best_evals = ThreadPool(nodes=self.num_processes).amap(
             get_max_eval, unzip(best)[0]).get()
         best = zip(unzip(best)[0], best_evals)
         sorted_by_eval = sorted(best, key=lambda x:x[1])
