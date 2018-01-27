@@ -2,6 +2,7 @@ import numpy as np
 
 from fitterhappier.qn import StochasticCoordinateDiagonalAdamServer as SCDAS
 from fitterhappier.stepsize import InversePowerScheduler as IPS
+from fitterhappier.stepsize import FixedScheduler as FS
 
 # TODO: quasi-Newton stuff gets weird here; figure it out
 class StochasticCoordinateDescentOptimizer:
@@ -29,7 +30,7 @@ class StochasticCoordinateDescentOptimizer:
         self.eta0 = eta0
 
         if eta_scheduler is None:
-            eta_scheduler = IPS(self.eta0)
+            eta_scheduler = FS(self.eta0)
 
         self.eta_scheduler = eta_scheduler
 
