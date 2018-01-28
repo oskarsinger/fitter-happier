@@ -40,7 +40,8 @@ class StochasticCoordinateDescentOptimizer:
         self.qn = qn_server
 
         if theta_init is None:
-            theta_init = np.zeros((self.p, 1))
+            theta_init = self.get_projected(
+                np.random.randn(self.d, 1) / self.d)
 
         self.theta_init = self.get_projected(theta_init)
         self.theta = None

@@ -32,12 +32,12 @@ class DiagonalAdamOptimizer:
         self.eta0 = eta0
 
         if theta_init is None:
-            theta_init = np.random.randn(self.d, 1)
+            theta_init = self.get_projected(
+                np.random.randn(self.d, 1) / self.d)
 
         self.theta_init = theta_init
 
         self.adam = DiagonalAdamServer(
-            self.d,
             delta=delta,
             beta1=beta1,
             beta2=beta2,
@@ -60,7 +60,7 @@ class DiagonalAdamOptimizer:
         estimate = np.copy(self.theta_init)
 
         self.objectives.append(
-            self.get_objective(estimatet))
+            self.get_objective(estimate))
         
         obj_diff = float('inf')
         t = 0
