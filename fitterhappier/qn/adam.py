@@ -82,7 +82,6 @@ class DiagonalAdamOptimizer:
             t += 1
 
         interval = int(t / 10)
-        print('objectives', self.objectives[::interval])
 
         self.theta_hat = estimate
 
