@@ -11,11 +11,11 @@ class LBFGSSolver:
 
     def get_parameters(self):
 
-        if self.w_hat is None:
+        if self.theta_hat is None:
             raise Exception(
                 'Parameters have not been computed.')
         else:
-            return np.copy(self.w_hat)
+            return np.copy(self.theta_hat)
 
     def run(self):
 
@@ -58,16 +58,16 @@ class BFGSSolver:
 
         self.theta_init = theta_init
 
-        self.w_hat = None
+        self.theta_hat = None
         self.objectives = []
 
     def get_parameters(self):
 
-        if self.w_hat is None:
+        if self.theta_hat is None:
             raise Exception(
                 'Parameters have not been computed.')
         else:
-            return np.copy(self.w_hat)
+            return np.copy(self.theta_hat)
 
     def run(self):
 
@@ -108,7 +108,7 @@ class BFGSSolver:
 
             t += 1
 
-        self.w_hat = estimatet1
+        self.theta_hat = estimatet1
 
     def _get_s(self, H, grad, estimate, t):
 

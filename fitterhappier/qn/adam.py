@@ -6,6 +6,82 @@ from fitterhappier.utils import get_shrunk_and_thresholded as get_st
 from theline.svd import get_multiplied_svd, get_svd_power
 from drrobert.arithmetic import get_moving_avg as get_ma
 
+class DiagonalAdamOptimizer:
+
+    def __init__(self,
+        d,
+        get_objective,
+        get_gradient,
+        get_projected,
+        theta_init=None,
+        max_rounds=100,
+        epsilon=10**(-5),
+        eta0=0.1,
+        delta=10**(-5),
+        beta1=0.9,
+        beta2=0.9,
+        lower=None, 
+        verbose=False):
+
+        self.get_objective = get_objective
+        self.get_gradient = get_gradient
+        self.get_projected = get_projected
+        self.d = d
+        self.max_rounds = max_rounds
+        self.epsilon = epsilon
+        self.eta0 = eta0
+
+        if theta_init is None:
+            theta_init = np.random.randn(self.d, 1)
+
+        self.theta_init = theta_init
+
+        self.adam = DiagonalAdamServer(
+            self.d,
+            delta=delta,
+            beta1=beta1,
+            beta2=beta2,
+            lower=lower,
+            verbose=verbose)
+
+        self.theta_hat = None
+        self.objectives = []
+
+    def get_parameters(self):
+
+        if self.theta_hat is None:
+            raise Exception(
+                'Parameters have not been computed.')
+        else:
+            return np.copy(self.theta_hat)
+
+    def run(self):
+
+        estimate = np.copy(self.theta_init)
+
+        self.objectives.append(
+            self.get_objective(estimatet))
+        
+        obj_diff = float('inf')
+        t = 0
+
+        while obj_diff > self.epsilon and t < self.max_rounds:
+
+            grad = self.get_gradient(estimate)
+            estimate = self.adam.get_update(
+                estimate,
+                grad,
+                self.eta0)
+
+            self.objectives.append(
+                self.get_objective(estimate))
+
+            obj_diff = np.abs(self.objectives[-1] - self.objectives[-2])
+
+            t += 1
+
+        self.theta_hat = estimate
+
 class StochasticCoordinateDiagonalAdamServer:
 
     def __init__(self,
