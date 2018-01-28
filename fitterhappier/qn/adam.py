@@ -68,10 +68,11 @@ class DiagonalAdamOptimizer:
         while obj_diff > self.epsilon and t < self.max_rounds:
 
             grad = self.get_gradient(estimate)
-            estimate = self.adam.get_update(
+            update = self.adam.get_update(
                 estimate,
                 grad,
                 self.eta0)
+            estimate = self.get_projected(update)
 
             self.objectives.append(
                 self.get_objective(estimate))
@@ -79,6 +80,9 @@ class DiagonalAdamOptimizer:
             obj_diff = np.abs(self.objectives[-1] - self.objectives[-2])
 
             t += 1
+
+        interval = int(t / 10)
+        print('objectives', self.objectives[::interval])
 
         self.theta_hat = estimate
 
