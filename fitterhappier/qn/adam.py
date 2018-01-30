@@ -62,7 +62,7 @@ class DiagonalAdamOptimizer:
         self.objectives.append(
             self.get_objective(estimate))
         
-        search_dir_norm = float('inf')
+        search_dir_size = float('inf')
         t = 0
 
         while search_dir_size > self.epsilon and t < self.max_rounds:
@@ -83,6 +83,11 @@ class DiagonalAdamOptimizer:
 
             self.objectives.append(
                 self.get_objective(estimate))
+
+            if t % 100 == 0:
+                print('Round:', t)
+                print('Objective:', self.objectives[-1])
+                print('Search direction size:', search_dir_size)
 
             t += 1
 
