@@ -62,26 +62,29 @@ class DiagonalAdamOptimizer:
         self.objectives.append(
             self.get_objective(estimate))
         
-        obj_diff = float('inf')
+        search_dir_norm = float('inf')
         t = 0
 
-        while obj_diff > self.epsilon and t < self.max_rounds:
+        while search_dir_size > self.epsilon and t < self.max_rounds:
 
+            # Compute unprojected update
             grad = self.get_gradient(estimate)
             update = self.adam.get_update(
                 estimate,
                 grad,
                 self.eta0)
+
+            # Compute convergence criterion
+            search_dir = - (update - estimate) / self.eta0
+            search_dir_size = np.linalg.norm(search_dir)**2
+
+            # Project onto feasible region for new estimate
             estimate = self.get_projected(update)
 
             self.objectives.append(
                 self.get_objective(estimate))
 
-            obj_diff = np.abs(self.objectives[-1] - self.objectives[-2])
-
             t += 1
-
-        interval = int(t / 10)
 
         self.theta_hat = estimate
 
