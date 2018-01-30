@@ -74,7 +74,7 @@ class FullAdaGradOptimizer:
             self.objectives.append(
                 self.get_objective(estimate))
 
-            if t % 100 == 0:
+            if t % 10 == 0:
                 print('Round:', t)
                 print('Objective:', self.objectives[-1])
                 print('Search direction size:', search_dir_size)
@@ -104,9 +104,8 @@ class FullAdaGradServer:
             self.d = gradient.shape[0]
         else:
             self.G += np.dot(gradient, gradient.T)
-            self.S = get_svd_power(self.G, 0.5)
 
-
+        self.S = get_svd_power(self.G, 0.5)
         mirror_update = get_mu(
             parameters,
             eta,
