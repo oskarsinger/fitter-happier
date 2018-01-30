@@ -1,7 +1,7 @@
 import numpy as np
 
 from .. import utils as ou
-from ..utils.proximal import get_mirror_update as get_mu
+from fitterhappier.utils.proximal import get_mirror_update as get_mu
 from fitterhappier.utils import get_shrunk_and_thresholded as get_st
 from theline.svd import get_multiplied_svd, get_svd_power
 from drrobert.arithmetic import get_moving_avg as get_ma
@@ -36,14 +36,12 @@ class DiagonalAdamOptimizer:
                 np.random.randn(self.d, 1) / self.d)
 
         self.theta_init = theta_init
-
         self.adam = DiagonalAdamServer(
             delta=delta,
             beta1=beta1,
             beta2=beta2,
             lower=lower,
             verbose=verbose)
-
         self.theta_hat = None
         self.objectives = []
 
