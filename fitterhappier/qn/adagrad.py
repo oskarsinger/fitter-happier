@@ -4,7 +4,7 @@ from fitterhappier.utils.proximal import get_mirror_update as get_mu
 from fitterhappier.utils import get_shrunk_and_thresholded as get_st
 from theline.svd import get_svd_power
 
-class FulAdaGradBlockCoordinateOptimizer:
+class FullAdaGradBlockCoordinateOptimizer:
 
     def __init__(self,
         ds,
@@ -36,7 +36,7 @@ class FulAdaGradBlockCoordinateOptimizer:
         self.deltas = deltas
 
         if theta_inits is None:
-            theta_inits = [np.random.randn(d*) / d
+            theta_inits = [np.random.randn(*d) / d
                            for d in self.ds]
 
         self.theta_inits = self.get_projected(theta_inits)
@@ -54,7 +54,54 @@ class FulAdaGradBlockCoordinateOptimizer:
         else:
             return [np.copy(th) for th in self.theta_hats]
 
+    def run(self):
 
+        estimates = [np.copy(ti) for ti in self.theta_inits]
+        updatest1 = estimate
+        updatest = None
+
+        self.objectives.append(
+            self.get_objective(estimates))
+        
+        search_dir_norm = float('inf')
+        t = 0
+
+        while mean_search_dir_norm > self.epsilon and t < self.max_rounds:
+
+            # Compute unprojected update
+            grads = self.get_gradient(estimates)
+            updatest = [np.copy(ut1) for ut1 in updatest1]
+            updates_info = zip(estimates, grads, self.eta0s)
+            updatest1 = [ag.get_update(e, g, eta0)
+                         for (e, g, eta0) in updates_info]
+
+            # Compute convergence criterion
+            search_dirs_info = zip(updatest1, updatest, self.eta0s)
+            search_dirs = [- (ut1 - ut) / eta0
+                           for (ut1, ut, eta0) in search_dirs_info]
+            mean_search_dir_norm = np.mean(
+                [np.linalg.norm(sd) for sd in search_dirs])
+
+
+            # Project onto feasible region for new estimate
+            estimates = self.get_projected(updatest1)
+
+            if t % 1000 == 0:
+
+                self.objectives.append(
+                    self.get_objective(estimates))
+
+                if self.verbose:
+                    print('Round:', t)
+                    print('Objective:', self.objectives[-1])
+                    grads_norms = [np.linalg.norm(grad) 
+                                   for grad in grads]
+                    print('Gradient norms:', grad_norms)
+                    print('Search direction norm:', mean_search_dir_norm)
+
+            t += 1
+
+        self.theta_hats = estimates
 
 class FullAdaGradOptimizer:
 
@@ -97,52 +144,6 @@ class FullAdaGradOptimizer:
                 'Parameters have not been computed.')
         else:
             return np.copy(self.theta_hat)
-
-    def run(self):
-
-        estimates = [np.copy(ti) for ti in self.theta_inits]
-        updatet1 = estimates
-        updatet = None
-
-        self.objectives.append(
-            self.get_objective(estimate))
-        
-        search_dir_norm = float('inf')
-        t = 0
-
-        while mean_search_dir_norm > self.epsilon and t < self.max_rounds:
-
-            for (i, ag) in enumerate(self.adagrads):
-                # Compute unprojected update
-                grad = self.get_gradients[i](estimate)
-                updatet = np.copy(updatet1[i])
-                updatet1 = ag.get_update(
-                    estimate,
-                    grad,
-                    self.eta0)
-
-                # Compute convergence criterion
-                search_dir = - (updatet1 - updatet) / self.eta0
-                search_dir_norm = np.linalg.norm(search_dir)
-
-                # Project onto feasible region for new estimate
-                estimate = self.get_projected(updatet1)
-
-                if t % 1000 == 0:
-
-                    self.objectives.append(
-                        self.get_objective(estimate))
-
-                    if self.verbose:
-                        print('Round:', t)
-                        print('Objective:', self.objectives[-1])
-                        print('Gradient norm:', np.linalg.norm(grad))
-                        print('Search direction norm:', search_dir_norm)
-
-                t += 1
-
-            self.theta_hat = estimate
-
 
     def run(self):
 
