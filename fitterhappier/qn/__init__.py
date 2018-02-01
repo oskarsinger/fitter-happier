@@ -4,5 +4,7 @@ from .adagrad import FullAdaGradOptimizer
 from .adam import DiagonalAdamServer
 from .adam import StochasticCoordinateDiagonalAdamServer
 from .adam import DiagonalAdamOptimizer
+from .natural import EmpiricalNaturalGradientServer
+from .natural import EmpiricalNaturalGradientOptimizer
 from .diagonal import StaticDiagonalServer
 from .bfgs import BFGSSolver
