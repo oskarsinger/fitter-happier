@@ -17,7 +17,8 @@ class FullAdaGradOptimizer:
         epsilon=10**(-5),
         eta0=0.1,
         momentum=0.99,
-        lower=None):
+        lower=None,
+        verbose=False):
 
         self.get_objective = get_objective
         self.get_gradient = get_gradient
@@ -27,6 +28,7 @@ class FullAdaGradOptimizer:
         self.epsilon = epsilon
         self.eta0 = eta0
         self.momentum = momentum
+        self.verbose = verbose
 
         if theta_init is None:
             theta_init = np.random.randn(self.d, 1) / self.d
@@ -80,10 +82,11 @@ class FullAdaGradOptimizer:
                 self.objectives.append(
                     self.get_objective(estimate))
 
-                print('Round:', t)
-                print('Objective:', self.objectives[-1])
-                print('Gradient norm:', np.linalg.norm(grad))
-                print('Search direction norm:', search_dir_norm)
+                if self.verbose:
+                    print('Round:', t)
+                    print('Objective:', self.objectives[-1])
+                    print('Gradient norm:', np.linalg.norm(grad))
+                    print('Search direction norm:', search_dir_norm)
 
             t += 1
 
