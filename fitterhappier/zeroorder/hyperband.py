@@ -59,7 +59,7 @@ class ParallelHyperBandOptimizer:
                 argsorted = np.argsort(evals)
                 num_to_keep = int(n_i / self.eta)
 
-                if num_to_keep > 0:
+                if num_to_keep > 1:
                     samples = [samples[j] for j in argsorted[-num_to_keep:]]
                 else:
                     best_sample = samples[argsorted[0]]
