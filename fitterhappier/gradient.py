@@ -1,5 +1,18 @@
 from drrobert.arithmetic import get_moving_avg as get_ma
 
+class GradientOptimizer:
+
+    def __init__(self,
+        d,
+        get_objective,
+        get_gradient,
+        get_projected,
+        theta_init=None,
+        max_rounds=100,
+        epsilon=10**(-5),
+        eta0=0.1):
+        pass
+
 class GradientServer:
 
     def __init__(self, beta=None, dual_avg=False):

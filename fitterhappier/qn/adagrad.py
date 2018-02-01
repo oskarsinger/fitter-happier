@@ -16,6 +16,7 @@ class FullAdaGradOptimizer:
         delta=10**(-5),
         epsilon=10**(-5),
         eta0=0.1,
+        momentum=0.99,
         lower=None):
 
         self.get_objective = get_objective
@@ -25,12 +26,12 @@ class FullAdaGradOptimizer:
         self.max_rounds = max_rounds
         self.epsilon = epsilon
         self.eta0 = eta0
+        self.momentum = momentum
 
         if theta_init is None:
-            theta_init = self.get_projected(
-                np.random.randn(self.d, 1) / self.d)
+            theta_init = np.random.randn(self.d, 1) / self.d
 
-        self.theta_init = theta_init
+        self.theta_init = self.get_projected(theta_init)
         self.adagrad = FullAdaGradServer(
             delta=delta,
             lower=lower)
@@ -48,36 +49,41 @@ class FullAdaGradOptimizer:
     def run(self):
 
         estimate = np.copy(self.theta_init)
+        updatet1 = estimate
+        updatet = None
 
         self.objectives.append(
             self.get_objective(estimate))
         
-        search_dir_size = float('inf')
+        search_dir_norm = float('inf')
         t = 0
 
-        while search_dir_size > self.epsilon and t < self.max_rounds:
+        while search_dir_norm > self.epsilon and t < self.max_rounds:
 
             # Compute unprojected update
             grad = self.get_gradient(estimate)
-            update = self.adagrad.get_update(
+            updatet = np.copy(updatet1)
+            updatet1 = self.adagrad.get_update(
                 estimate,
                 grad,
                 self.eta0)
 
             # Compute convergence criterion
-            search_dir = - (update - estimate) / self.eta0
-            search_dir_size = np.linalg.norm(search_dir)**2
+            search_dir = - (updatet1 - updatet) / self.eta0
+            search_dir_norm = np.linalg.norm(search_dir)
 
             # Project onto feasible region for new estimate
-            estimate = self.get_projected(update)
-
-            self.objectives.append(
-                self.get_objective(estimate))
+            estimate = self.get_projected(updatet1)
 
             if t % 1000 == 0:
+
+                self.objectives.append(
+                    self.get_objective(estimate))
+
                 print('Round:', t)
                 print('Objective:', self.objectives[-1])
-                print('Search direction size:', search_dir_size)
+                print('Gradient norm:', np.linalg.norm(grad))
+                print('Search direction norm:', search_dir_norm)
 
             t += 1
 
@@ -132,7 +138,9 @@ class FullAdaGradServer:
                 dual_update = get_st(
                     dual_update, lower=self.lower) 
 
-        return np.linalg.solve(self.H, dual_update)
+        H_inv = get_svd_power(self.H, -1)
+
+        return np.dot(H_inv, dual_update)
 
 class DiagonalAdaGradServer:
 
