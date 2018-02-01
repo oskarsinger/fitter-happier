@@ -4,6 +4,58 @@ from fitterhappier.utils.proximal import get_mirror_update as get_mu
 from fitterhappier.utils import get_shrunk_and_thresholded as get_st
 from theline.svd import get_svd_power
 
+class FulAdaGradBlockCoordinateOptimizer:
+
+    def __init__(self,
+        ds,
+        get_objective,
+        get_gradients,
+        get_projected,
+        theta_inits=None,
+        max_rounds=10000,
+        deltas=None,
+        eta0s=None,
+        verbose=False):
+
+        self.ds = ds
+        self.get_objective = get_objective
+        self.get_gradients = get_gradients
+        self.get_projected = get_projected
+        self.max_rounds = max_rounds
+        self.epsilon = epsilon
+        self.verbose = verbose
+
+        if eta0s is None:
+            eta0s = [0.1] * len(self.ds)
+
+        self.eta0s = eta0s
+
+        if deltas is None:
+            deltas = [10**(-5)] * len(self.ds)
+
+        self.deltas = deltas
+
+        if theta_inits is None:
+            theta_inits = [np.random.randn(d*) / d
+                           for d in self.ds]
+
+        self.theta_inits = self.get_projected(theta_inits)
+        FAS = FullAdaGradServer
+        self.adagrads = [FAS(delta=delta)
+                         for delta in deltas]
+        self.theta_hats = None
+        self.objectives = []
+
+    def get_parameters(self):
+
+        if self.theta_hats is None:
+            raise Exception(
+                'Parameters have not been computed.')
+        else:
+            return [np.copy(th) for th in self.theta_hats]
+
+
+
 class FullAdaGradOptimizer:
 
     def __init__(self,
@@ -12,11 +64,10 @@ class FullAdaGradOptimizer:
         get_gradient,
         get_projected,
         theta_init=None,
-        max_rounds=100,
+        max_rounds=10000,
         delta=10**(-5),
         epsilon=10**(-5),
         eta0=0.1,
-        momentum=0.99,
         lower=None,
         verbose=False):
 
@@ -27,7 +78,6 @@ class FullAdaGradOptimizer:
         self.max_rounds = max_rounds
         self.epsilon = epsilon
         self.eta0 = eta0
-        self.momentum = momentum
         self.verbose = verbose
 
         if theta_init is None:
@@ -47,6 +97,52 @@ class FullAdaGradOptimizer:
                 'Parameters have not been computed.')
         else:
             return np.copy(self.theta_hat)
+
+    def run(self):
+
+        estimates = [np.copy(ti) for ti in self.theta_inits]
+        updatet1 = estimates
+        updatet = None
+
+        self.objectives.append(
+            self.get_objective(estimate))
+        
+        search_dir_norm = float('inf')
+        t = 0
+
+        while mean_search_dir_norm > self.epsilon and t < self.max_rounds:
+
+            for (i, ag) in enumerate(self.adagrads):
+                # Compute unprojected update
+                grad = self.get_gradients[i](estimate)
+                updatet = np.copy(updatet1[i])
+                updatet1 = ag.get_update(
+                    estimate,
+                    grad,
+                    self.eta0)
+
+                # Compute convergence criterion
+                search_dir = - (updatet1 - updatet) / self.eta0
+                search_dir_norm = np.linalg.norm(search_dir)
+
+                # Project onto feasible region for new estimate
+                estimate = self.get_projected(updatet1)
+
+                if t % 1000 == 0:
+
+                    self.objectives.append(
+                        self.get_objective(estimate))
+
+                    if self.verbose:
+                        print('Round:', t)
+                        print('Objective:', self.objectives[-1])
+                        print('Gradient norm:', np.linalg.norm(grad))
+                        print('Search direction norm:', search_dir_norm)
+
+                t += 1
+
+            self.theta_hat = estimate
+
 
     def run(self):
 
