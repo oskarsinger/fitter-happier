@@ -69,6 +69,7 @@ class ParallelHyperBandOptimizer:
                     print('Evaluation:', best_evaluation)
 
                     best.append((best_sample, best_evaluation))
+                    break
 
         get_max_eval = lambda s: self.get_evaluation(s, self.max_iter)
         best_evals = list(ProcessPool(nodes=self.num_processes).imap(

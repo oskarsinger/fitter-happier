@@ -36,7 +36,7 @@ class FullAdaGradBlockCoordinateOptimizer:
         self.deltas = deltas
 
         if theta_inits is None:
-            theta_inits = [np.random.randn(*d) / d
+            theta_inits = [np.random.randn(*d)
                            for d in self.ds]
 
         self.theta_inits = self.get_projected(theta_inits)
