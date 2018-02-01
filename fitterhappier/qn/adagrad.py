@@ -74,7 +74,7 @@ class FullAdaGradOptimizer:
             self.objectives.append(
                 self.get_objective(estimate))
 
-            if t % 10 == 0:
+            if t % 1000 == 0:
                 print('Round:', t)
                 print('Objective:', self.objectives[-1])
                 print('Search direction size:', search_dir_size)
@@ -106,20 +106,18 @@ class FullAdaGradServer:
             self.G += np.dot(gradient, gradient.T)
 
         self.S = get_svd_power(self.G, 0.5)
-        mirror_update = get_mu(
+        self.H = self.S + np.eye(self.d) * self.delta
+
+        return get_mu(
             parameters,
             eta,
             gradient, 
             self._get_dual,
             self._get_primal)
 
-        return mirror_update
-
     def _get_dual(self, parameters):
 
-        H = self.S + np.eye(self.d) * self.delta
-
-        return np.dot(H, parameters)
+        return np.dot(self.H, parameters)
 
     def _get_primal(self, dual_update):
 
@@ -134,9 +132,7 @@ class FullAdaGradServer:
                 dual_update = get_st(
                     dual_update, lower=self.lower) 
 
-        return np.linalg.solve(
-            self.S + self.delta * np.eye(self.d),
-            dual_update)
+        return np.linalg.solve(self.H, dual_update)
 
 class DiagonalAdaGradServer:
 
