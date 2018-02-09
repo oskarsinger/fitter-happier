@@ -48,6 +48,7 @@ def get_lp_norm_gradient(x, p):
 def get_shrunk_and_thresholded(x, lower=0):
 
     sign = np.sign(x)
-    threshed = get_thresholded(np.absolute(x), lower=lower)
+    threshed = get_thresholded(
+        np.absolute(x) - lower, lower=0)
 
     return sign * threshed
