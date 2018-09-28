@@ -1,21 +1,28 @@
 import numpy as np
 
+from fitterhappier.stepsize import InversePowerScheduler as IPS
+from theline.svd import get_svd_power
+
 class TwoPointBanditOptimizer:
 
     def __init__(self, 
         get_objective, 
         d,
-        eta, 
-        delta_scheduler, 
+        eta=10**(-1), 
+        delta_scheduler=None,
         r_and_drdw_inv=(lambda w: 0.5 * np.linalg.norm(w)**2, lambda theta: theta),
-        max_rounds):
+        max_rounds=500):
 
         self.get_objective = get_objective
         self.d = d
         self.eta = eta
-        self.delta_scheduler = delta_scheduler
         (self.r, self.drdw_inv) = r_and_drdw_inv
         self.max_rounds = max_rounds
+
+        if delta_scheduler is None:
+            delta_scheduler = IPS()
+
+        self.delta_scheduler = delta_scheduler
 
         self.w = None
 
@@ -25,7 +32,13 @@ class TwoPointBanditOptimizer:
 
     def run(self):
 
-        theta = np.zeros((self.d, 1))
+        theta = None
+
+        if len(self.d) == 1 or self.d[1] == 1:
+            theta = np.zeros((self.d, 1))
+        else:
+            theta = np.zeros(self.d)
+
         w_t = None
 
         for t in range(self.max_rounds):
@@ -34,8 +47,16 @@ class TwoPointBanditOptimizer:
             w_t = self.drdw_inv(theta)
             
             # Sample search direction
-            normal_sample = np.random.randn(d, 1)
-            shere_sample = normal_sample / np.linalg.norm(normal_sample)
+            sphere_sample = None
+            
+            if len(self.d) == 1 or self.d[1] == 1:
+                normal_sample = np.random.randn(d, 1)
+                sphere_sample = normal_sample / np.linalg.norm(normal_sample)
+            else:
+                normal_sample = np.random.randn(*d)
+                quad = np.dot(normal_sample.T, normal_sample)
+                normalizer = get_svd_power(quad, -0.5)
+                shere_sample = np.dot(normal_sample, normalizer)
 
             # Compute one-dimensional finite difference approximation
             delta_t = self.delta_scheduler.get_stepsize()
