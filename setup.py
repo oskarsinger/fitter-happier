@@ -11,7 +11,8 @@ packages = [
     'conjugate',
     'testers',
     'testers.aide',
-    'testers.fsvrg']
+    'testers.fsvrg'
+]
 
 setup(
     name='fitterhappier',
