@@ -4,6 +4,7 @@ from scipy.optimize import line_search
 from theline.utils import get_multi_dot as get_md
 
 # TODO: cite Nocedal and Wright
+# TODO: implement loop body
 class LBFGSSolver:
 
     def __init__(self):
@@ -75,7 +76,8 @@ class BFGSSolver:
         estimatet1 = None
 
         self.objectives.append(
-            self.get_objective(estimatet))
+            self.get_objective(estimatet)
+        )
         
         gradt = self.get_gradient(estimatet)
         gradt1 = None
@@ -92,7 +94,8 @@ class BFGSSolver:
             estimatet1 = self.get_projected(estimatet1)
 
             self.objectives.append(
-                self.get_objective(estimatet1))
+                self.get_objective(estimatet1)
+            )
 
             # Compute new gradient and y
             gradt1 = self.get_gradient(estimatet1)

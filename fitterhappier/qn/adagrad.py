@@ -128,7 +128,7 @@ class FullAdaGradOptimizer:
         self.verbose = verbose
 
         if theta_init is None:
-            theta_init = np.random.randn(self.d, 1) / self.d
+            theta_init = np.random.randn(*self.d) / np.prod(self.d)
 
         self.theta_init = self.get_projected(theta_init)
         self.adagrad = FullAdaGradServer(
@@ -152,7 +152,8 @@ class FullAdaGradOptimizer:
         updatet = None
 
         self.objectives.append(
-            self.get_objective(estimate))
+            self.get_objective(estimate)
+        )
         
         search_dir_norm = float('inf')
         t = 0
@@ -165,7 +166,8 @@ class FullAdaGradOptimizer:
             updatet1 = self.adagrad.get_update(
                 estimate,
                 grad,
-                self.eta0)
+                self.eta0
+            )
 
             # Compute convergence criterion
             search_dir = - (updatet1 - updatet) / self.eta0
@@ -177,7 +179,8 @@ class FullAdaGradOptimizer:
             if t % 1000 == 0:
 
                 self.objectives.append(
-                    self.get_objective(estimate))
+                    self.get_objective(estimate)
+                )
 
                 if self.verbose:
                     print('Round:', t)
@@ -219,7 +222,8 @@ class FullAdaGradServer:
             eta,
             gradient, 
             self._get_dual,
-            self._get_primal)
+            self._get_primal
+        )
 
     def _get_dual(self, parameters):
 
@@ -236,7 +240,9 @@ class FullAdaGradServer:
                 dual_update = get_multiplied_svd(U, s, V)
             else:
                 dual_update = get_st(
-                    dual_update, lower=self.lower) 
+                    dual_update, 
+                    lower=self.lower
+                )
 
         H_inv = get_svd_power(self.H, -1)
 
